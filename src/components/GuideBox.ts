@@ -1,4 +1,5 @@
-import { cx, css } from '../emotion'
+import { cx, css } from '~/emotion'
+import { Coordinate } from '~/interfaces'
 
 const styles = {
     container: css({

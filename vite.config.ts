@@ -1,17 +1,24 @@
 import path from 'path'
 import { defineConfig } from 'vite'
 
+const rootDir = (...paths: string[]) => path.resolve(__dirname, ...paths)
+
 export default defineConfig(() => ({
     build: {
         rollupOptions: {
             input: {
-                main: path.resolve(__dirname, 'index.html'),
+                main: rootDir('index.html'),
             },
         },
         // lib: {
-        //     entry: path.resolve(__dirname, 'lib/main.js'),
+        //     entry: rootDir('lib/main.js'),
         //     name: 'MyLib',
         //     fileName: (format) => `my-lib.${format}.js`,
         // },
+    },
+    resolve: {
+        alias: {
+            '~': rootDir('./src'),
+        },
     },
 }))

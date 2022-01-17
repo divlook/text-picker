@@ -1,6 +1,7 @@
-import { cx, css } from '../emotion'
-import GuideBox from './GuideBox'
-import Backdrop from './Backdrop'
+import { cx, css } from '~/emotion'
+import { Offset } from '~/interfaces'
+import GuideBox from '~/components/GuideBox'
+import Backdrop from '~/components/Backdrop'
 
 interface Pos {
     top: number
