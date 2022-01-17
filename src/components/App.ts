@@ -3,13 +3,6 @@ import { Offset } from '~/interfaces'
 import GuideBox from '~/components/GuideBox'
 import Backdrop from '~/components/Backdrop'
 
-interface Pos {
-    top: number
-    left: number
-    right: number
-    bottom: number
-}
-
 const styles = {
     container: css(),
     crosshair: css({
@@ -26,7 +19,7 @@ export default class App {
 
     #coordinates: [number, number][] = []
 
-    #includeElements = new Map<Element, Pos>()
+    #includeElements = new Map<Element, Offset>()
 
     #cachedElements = new Set<Element>()
 
@@ -77,6 +70,8 @@ export default class App {
         this.backdrop.setActive(false)
 
         this.#coordinates.push([x, y])
+
+        this.guideBox.setPoint(x, y)
 
         if (this.#coordinates.length === 2) {
             this.#active = false
@@ -138,7 +133,9 @@ export default class App {
                      */
                     if (this.#includeElements.has(current)) {
                         isSkip = true
-                        prevTargets.forEach((el) => this.#includeElements.delete(el))
+                        prevTargets.forEach((el) =>
+                            this.#includeElements.delete(el)
+                        )
                         break
                     }
 

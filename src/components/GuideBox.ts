@@ -15,6 +15,10 @@ const styles = {
         transform: `translate(0, 10px)`,
         boxSizing: 'border-box',
         cursor: 'move',
+        display: 'none',
+    }),
+    active: css({
+        display: 'block',
     }),
     point: css({
         position: 'absolute',
@@ -50,9 +54,21 @@ const styles = {
 export default class GuideBox {
     el
 
-    #active = false
+    #coordinates: Coordinate[] = []
 
-    #coordinates: [number, number][] = []
+    /**
+     * TODO: setPoint가 실행될 때 #coordinates 기준으로 outline 계산 필요
+     */
+    #outline = {
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+    }
+
+    get #active() {
+        return this.#coordinates.length > 0
+    }
 
     constructor() {
         this.el = document.createElement('div')
@@ -67,27 +83,30 @@ export default class GuideBox {
 
         this.#render()
 
-        window.addEventListener('mousemove', (ev) => {
-            if (this.#active) {
-                console.log(ev)
-            }
-        }, true)
+        window.addEventListener(
+            'mousemove',
+            (ev) => {
+                if (this.#active) {
+                    console.log(ev)
+                }
+            },
+            true
+        )
     }
 
     #render() {
-        this.el.className = cx(styles.container)
+        this.el.className = cx(styles.container, {
+            [styles.active]: this.#active,
+        })
     }
 
     setPoint(x: number, y: number) {
-        const count = this.#coordinates.length
-
-        if (count === 0 || count === 2) {
+        if (this.#coordinates.length === 2) {
             this.#coordinates = []
-            this.#active = true
-        } else {
-            this.#active = false
         }
 
         this.#coordinates.push([x, y])
+
+        this.#render()
     }
 }

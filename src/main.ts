@@ -5,4 +5,6 @@ const app = new App()
 
 document.body.appendChild(app.el)
 
-app.start()
+document.querySelector('#btn')?.addEventListener('click', () => {
+    app.start()
+})
