@@ -1,7 +1,7 @@
 import { cx, css } from '~/emotion'
 import { Coordinate } from '~/interfaces'
 
-const styles = {
+export const styles = {
     container: css({
         position: 'absolute',
         top: 0,
@@ -10,8 +10,8 @@ const styles = {
         borderWidth: 2,
         borderColor: 'dodgerblue',
         borderStyle: 'dashed',
-        width: 100,
-        height: 100,
+        width: 0,
+        height: 0,
         transform: `translate(0, 10px)`,
         boxSizing: 'border-box',
         cursor: 'move',
@@ -56,9 +56,6 @@ export default class GuideBox {
 
     #coordinates: Coordinate[] = []
 
-    /**
-     * TODO: setPoint가 실행될 때 #coordinates 기준으로 outline 계산 필요
-     */
     #outline = {
         x: 0,
         y: 0,
@@ -66,8 +63,16 @@ export default class GuideBox {
         height: 0,
     }
 
-    get #active() {
+    get isActive() {
         return this.#coordinates.length > 0
+    }
+
+    get isAutoDraw() {
+        return this.#coordinates.length === 1
+    }
+
+    get isDone() {
+        return this.#coordinates.length === 2
     }
 
     constructor() {
@@ -86,8 +91,16 @@ export default class GuideBox {
         window.addEventListener(
             'mousemove',
             (ev) => {
-                if (this.#active) {
-                    console.log(ev)
+                if (this.isAutoDraw) {
+                    this.#calcOutline([
+                        ...this.#coordinates,
+                        [
+                            ev.clientX + window.scrollX,
+                            ev.clientY + window.scrollY,
+                        ],
+                    ])
+
+                    this.#render()
                 }
             },
             true
@@ -95,9 +108,55 @@ export default class GuideBox {
     }
 
     #render() {
-        this.el.className = cx(styles.container, {
-            [styles.active]: this.#active,
+        const { x, y, width, height } = this.#outline
+
+        window.requestAnimationFrame(() => {
+            this.el.className = [
+                styles.container,
+                cx(
+                    {
+                        [styles.active]: this.isActive,
+                    },
+                    css({
+                        width,
+                        height,
+                        transform: `translate(${x}px, ${y}px)`,
+                    })
+                ),
+            ].join(' ')
         })
+    }
+
+    #calcOutline(nextCoordinates: Coordinate[]) {
+        const coordinates: Coordinate[] = []
+        const xPoints: number[] = []
+        const yPoints: number[] = []
+
+        if (nextCoordinates.length === 0) {
+            return
+        }
+
+        coordinates.push(...nextCoordinates)
+
+        if (nextCoordinates.length === 1) {
+            coordinates.push(nextCoordinates[0])
+        }
+
+        for (const [x, y] of coordinates) {
+            xPoints.push(x)
+            yPoints.push(y)
+        }
+
+        xPoints.sort((a, b) => a - b)
+        yPoints.sort((a, b) => a - b)
+
+        const [startX, endX] = xPoints
+        const [startY, endY] = yPoints
+
+        this.#outline.x = startX
+        this.#outline.y = startY
+        this.#outline.width = endX - startX
+        this.#outline.height = endY - startY
     }
 
     setPoint(x: number, y: number) {
@@ -106,6 +165,14 @@ export default class GuideBox {
         }
 
         this.#coordinates.push([x, y])
+
+        this.#calcOutline(this.#coordinates)
+
+        this.#render()
+    }
+
+    clear() {
+        this.#coordinates = []
 
         this.#render()
     }

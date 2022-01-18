@@ -41,15 +41,21 @@ export default class Backdrop {
     }
 
     #showAnimation() {
-        this.el.className = cx(styles.container, {
-            [styles.display]: true,
-        })
+        this.el.className = [
+            styles.container,
+            cx({
+                [styles.display]: true,
+            }),
+        ].join(' ')
 
         window.requestAnimationFrame(() => {
-            this.el.className = cx(styles.container, {
-                [styles.display]: true,
-                [styles.active]: true,
-            })
+            this.el.className = [
+                styles.container,
+                cx({
+                    [styles.display]: true,
+                    [styles.active]: true,
+                }),
+            ].join(' ')
         })
     }
 

@@ -1,6 +1,6 @@
 import { cx, css } from '~/emotion'
 import { Offset } from '~/interfaces'
-import GuideBox from '~/components/GuideBox'
+import GuideBox, { styles as guideBoxStyles } from '~/components/GuideBox'
 import Backdrop from '~/components/Backdrop'
 
 const styles = {
@@ -34,8 +34,28 @@ export default class App {
         window.addEventListener(
             'click',
             (ev) => {
+                if (this.guideBox.isDone) {
+                    const target = ev.target as HTMLElement
+
+                    const isActive = [
+                        target.classList.contains(guideBoxStyles.container),
+                        !!target.closest(`.${guideBoxStyles.container}`),
+                    ].some((value) => value)
+
+                    if (isActive) {
+                        return
+                    }
+
+                    this.clear()
+
+                    return
+                }
+
                 if (this.#active) {
-                    this.setPoint(ev.x, ev.y)
+                    const x = ev.clientX + window.scrollX
+                    const y = ev.clientY + window.scrollY
+
+                    this.setPoint(x, y)
                 }
             },
             true
@@ -43,7 +63,7 @@ export default class App {
     }
 
     #render() {
-        this.el.className = cx(styles.container)
+        this.el.className = [styles.container, cx()].join(' ')
     }
 
     start() {
@@ -77,6 +97,12 @@ export default class App {
             this.#active = false
             document.body.classList.remove(styles.crosshair)
         }
+    }
+
+    clear() {
+        this.guideBox.clear()
+        this.#coordinates = []
+        this.#render()
     }
 
     parseElements() {
