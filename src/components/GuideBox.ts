@@ -1,5 +1,5 @@
 import { cx, css } from '~/emotion'
-import { Coordinate } from '~/interfaces'
+import { Coordinate, Outline } from '~/interfaces'
 
 export const styles = {
     container: css({
@@ -56,7 +56,9 @@ export default class GuideBox {
 
     #coordinates: Coordinate[] = []
 
-    #outline = {
+    #onMove: Function[] = []
+
+    outline: Outline = {
         x: 0,
         y: 0,
         width: 0,
@@ -88,6 +90,8 @@ export default class GuideBox {
 
         this.#render()
 
+        // TODO: 크기 변형할 수 있게 해야됨
+
         window.addEventListener(
             'mousemove',
             (ev) => {
@@ -101,14 +105,46 @@ export default class GuideBox {
                     ])
 
                     this.#render()
+
+                    this.#onMove.forEach((fn) => fn())
                 }
             },
             true
         )
+
+        /**
+         * TODO: 임시로 이렇게 작업
+         */
+        let isMove = false
+        let shift: number[] = []
+
+        this.el.addEventListener('mousedown', (ev) => {
+            if (this.isDone) {
+                const rect = this.el.getBoundingClientRect()
+                isMove = true
+                shift = [ev.clientX - rect.left, ev.clientY - rect.top]
+            }
+        })
+
+        this.el.addEventListener('mousemove', (ev) => {
+            if (this.isDone && isMove) {
+                this.outline.x = ev.pageX - shift[0]
+                this.outline.y = ev.pageY - shift[1]
+
+                this.#render()
+
+                this.#onMove.forEach((fn) => fn())
+            }
+        })
+
+        this.el.addEventListener('mouseup', () => {
+            isMove = false
+            shift = []
+        })
     }
 
     #render() {
-        const { x, y, width, height } = this.#outline
+        const { x, y, width, height } = this.outline
 
         window.requestAnimationFrame(() => {
             this.el.className = [
@@ -153,10 +189,10 @@ export default class GuideBox {
         const [startX, endX] = xPoints
         const [startY, endY] = yPoints
 
-        this.#outline.x = startX
-        this.#outline.y = startY
-        this.#outline.width = endX - startX
-        this.#outline.height = endY - startY
+        this.outline.x = startX
+        this.outline.y = startY
+        this.outline.width = endX - startX
+        this.outline.height = endY - startY
     }
 
     setPoint(x: number, y: number) {
@@ -175,5 +211,9 @@ export default class GuideBox {
         this.#coordinates = []
 
         this.#render()
+    }
+
+    onMove(cb: Function) {
+        this.#onMove.push(cb)
     }
 }

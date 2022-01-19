@@ -11,3 +11,17 @@ export interface Offset {
     right: number
     bottom: number
 }
+
+export interface BlockNode {
+    id: Symbol
+    parentId?: Symbol
+    el: Element
+    childs: Map<Symbol, BlockNode>
+}
+
+export interface Outline {
+    x: number
+    y: number
+    width: number
+    height: number
+}
