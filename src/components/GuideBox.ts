@@ -101,6 +101,11 @@ export default class GuideBox extends MicroElement {
 
                     this.emit('move')
                 }
+
+                if (this.isDone && isMove) {
+                    // 드래그로 상자 움직일 때 텍스트 선택되는 현상 방지
+                    ev.preventDefault()
+                }
             },
             true
         )
