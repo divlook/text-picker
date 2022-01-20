@@ -1,4 +1,5 @@
 import { cx, css } from '~/emotion'
+import { MicroElement } from '~/micro-element'
 
 const styles = {
     container: css({
@@ -20,27 +21,21 @@ const styles = {
     }),
 }
 
-export default class Backdrop {
-    el
+export default class Backdrop extends MicroElement {
+    el = document.createElement('span')
 
-    #active = false
+    private isActive = false
 
-    constructor() {
-        this.el = document.createElement('div')
-
-        this.#render()
-    }
-
-    #render() {
-        if (this.#active) {
-            this.#showAnimation()
+    render() {
+        if (this.isActive) {
+            this.showAnimation()
             return
         }
 
-        this.#hideAnimation()
+        this.hideAnimation()
     }
 
-    #showAnimation() {
+    private showAnimation() {
         this.el.className = [
             styles.container,
             cx({
@@ -59,7 +54,7 @@ export default class Backdrop {
         })
     }
 
-    #hideAnimation() {
+    private hideAnimation() {
         this.el.className = cx(styles.container, {
             [styles.display]: true,
             [styles.active]: false,
@@ -73,7 +68,7 @@ export default class Backdrop {
     }
 
     setActive(active: boolean) {
-        this.#active = active
-        this.#render()
+        this.isActive = active
+        this.render()
     }
 }

@@ -1,5 +1,6 @@
 import { cx, css } from '~/emotion'
 import { Coordinate, Outline } from '~/interfaces'
+import { MicroElement } from '~/micro-element'
 
 export const styles = {
     container: css({
@@ -51,12 +52,8 @@ export const styles = {
     ],
 }
 
-export default class GuideBox {
-    el
-
-    #coordinates: Coordinate[] = []
-
-    #onMove: Function[] = []
+export default class GuideBox extends MicroElement {
+    coordinates: Coordinate[] = []
 
     outline: Outline = {
         x: 0,
@@ -66,20 +63,18 @@ export default class GuideBox {
     }
 
     get isActive() {
-        return this.#coordinates.length > 0
+        return this.coordinates.length > 0
     }
 
     get isAutoDraw() {
-        return this.#coordinates.length === 1
+        return this.coordinates.length === 1
     }
 
     get isDone() {
-        return this.#coordinates.length === 2
+        return this.coordinates.length === 2
     }
 
-    constructor() {
-        this.el = document.createElement('div')
-
+    mounted() {
         styles.pointMap.forEach((point) => {
             const div = document.createElement('div')
 
@@ -88,25 +83,23 @@ export default class GuideBox {
             this.el.appendChild(div)
         })
 
-        this.#render()
-
         // TODO: 크기 변형할 수 있게 해야됨
 
         window.addEventListener(
             'mousemove',
             (ev) => {
                 if (this.isAutoDraw) {
-                    this.#calcOutline([
-                        ...this.#coordinates,
+                    this.calcOutline([
+                        ...this.coordinates,
                         [
                             ev.clientX + window.scrollX,
                             ev.clientY + window.scrollY,
                         ],
                     ])
 
-                    this.#render()
+                    this.render()
 
-                    this.#onMove.forEach((fn) => fn())
+                    this.emit('move')
                 }
             },
             true
@@ -131,9 +124,9 @@ export default class GuideBox {
                 this.outline.x = ev.pageX - shift[0]
                 this.outline.y = ev.pageY - shift[1]
 
-                this.#render()
+                this.render()
 
-                this.#onMove.forEach((fn) => fn())
+                this.emit('move')
             }
         })
 
@@ -143,7 +136,7 @@ export default class GuideBox {
         })
     }
 
-    #render() {
+    render() {
         const { x, y, width, height } = this.outline
 
         window.requestAnimationFrame(() => {
@@ -163,7 +156,7 @@ export default class GuideBox {
         })
     }
 
-    #calcOutline(nextCoordinates: Coordinate[]) {
+    private calcOutline(nextCoordinates: Coordinate[]) {
         const coordinates: Coordinate[] = []
         const xPoints: number[] = []
         const yPoints: number[] = []
@@ -196,24 +189,20 @@ export default class GuideBox {
     }
 
     setPoint(x: number, y: number) {
-        if (this.#coordinates.length === 2) {
-            this.#coordinates = []
+        if (this.coordinates.length === 2) {
+            this.coordinates = []
         }
 
-        this.#coordinates.push([x, y])
+        this.coordinates.push([x, y])
 
-        this.#calcOutline(this.#coordinates)
+        this.calcOutline(this.coordinates)
 
-        this.#render()
+        this.render()
     }
 
     clear() {
-        this.#coordinates = []
+        this.coordinates = []
 
-        this.#render()
-    }
-
-    onMove(cb: Function) {
-        this.#onMove.push(cb)
+        this.render()
     }
 }

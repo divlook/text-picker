@@ -1,6 +1,7 @@
 import { cx, css } from '~/emotion'
 import { Coordinate } from '~/interfaces'
 import { BlockParser } from '~/block-parser'
+import { MicroElement } from '~/micro-element'
 import GuideBox, { styles as guideBoxStyles } from '~/components/GuideBox'
 import Backdrop from '~/components/Backdrop'
 
@@ -11,22 +12,17 @@ const styles = {
     }),
 }
 
-export default class App {
-    el
+export default class App extends MicroElement {
     backdrop = new Backdrop()
     guideBox = new GuideBox()
 
-    #active = false
+    private isActive = false
 
-    #coordinates: Coordinate[] = []
+    coordinates: Coordinate[] = []
 
-    #blocks?: BlockParser
+    blocks?: BlockParser
 
-    constructor() {
-        this.el = document.createElement('div')
-
-        this.#render()
-
+    mounted() {
         this.el.appendChild(this.backdrop.el)
         this.el.appendChild(this.guideBox.el)
 
@@ -50,7 +46,7 @@ export default class App {
                     return
                 }
 
-                if (this.#active) {
+                if (this.isActive) {
                     const x = ev.clientX + window.scrollX
                     const y = ev.clientY + window.scrollY
 
@@ -60,22 +56,22 @@ export default class App {
             true
         )
 
-        this.guideBox.onMove(() => {
-            this.#blocks?.select(this.guideBox.outline)
+        this.guideBox.on('move', () => {
+            this.blocks?.select(this.guideBox.outline)
         })
     }
 
-    #render() {
+    render() {
         this.el.className = [styles.container, cx()].join(' ')
     }
 
     start() {
-        this.#blocks?.claer()
-        this.#blocks = new BlockParser(document.body)
+        this.blocks?.claer()
+        this.blocks = new BlockParser(document.body)
 
         window.requestAnimationFrame(() => {
-            this.#active = true
-            this.#coordinates = []
+            this.isActive = true
+            this.coordinates = []
 
             if (document.body.classList.contains(styles.crosshair)) {
                 document.body.classList.remove(styles.crosshair)
@@ -93,20 +89,20 @@ export default class App {
     setPoint(x: number, y: number) {
         this.backdrop.setActive(false)
 
-        this.#coordinates.push([x, y])
+        this.coordinates.push([x, y])
 
         this.guideBox.setPoint(x, y)
 
-        if (this.#coordinates.length === 2) {
-            this.#active = false
+        if (this.coordinates.length === 2) {
+            this.isActive = false
             document.body.classList.remove(styles.crosshair)
         }
     }
 
     clear() {
         this.guideBox.clear()
-        this.#coordinates = []
-        this.#blocks?.claer()
-        this.#render()
+        this.coordinates = []
+        this.blocks?.claer()
+        this.render()
     }
 }
