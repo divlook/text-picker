@@ -25,3 +25,21 @@ export interface Outline {
     width: number
     height: number
 }
+
+export interface MicroElementEmitMethod {
+    (eventName: 'created'): void
+    (eventName: 'mounted'): void
+    (eventName: string): void
+}
+
+export interface MicroElementOnMethod {
+    (eventName: 'created', callback: () => void): void
+    (eventName: 'mounted', callback: () => void): void
+    (eventName: string, callback: () => void): void
+}
+
+export interface MicroElementOffMethod {
+    (eventName?: 'created', callback?: () => void): void
+    (eventName?: 'mounted', callback?: () => void): void
+    (eventName?: string, callback?: () => void): void
+}
