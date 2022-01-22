@@ -2,6 +2,11 @@ import { cx, css } from '~/emotion'
 import { Coordinate, Outline } from '~/interfaces'
 import { MicroElement } from '~/micro-element'
 
+export enum GuideBoxMode {
+    Default,
+    Dragging,
+}
+
 export const styles = {
     container: css({
         position: 'absolute',
@@ -55,7 +60,16 @@ export const styles = {
 export default class GuideBox extends MicroElement {
     coordinates: Coordinate[] = []
 
+    mode = GuideBoxMode.Default
+
     outline: Outline = {
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+    }
+
+    private outlineAdjustValue: Outline = {
         x: 0,
         y: 0,
         width: 0,
@@ -102,7 +116,7 @@ export default class GuideBox extends MicroElement {
                     this.emit('move')
                 }
 
-                if (this.isDone && isMove) {
+                if (this.mode === GuideBoxMode.Dragging) {
                     // 드래그로 상자 움직일 때 텍스트 선택되는 현상 방지
                     ev.preventDefault()
                 }
@@ -110,24 +124,25 @@ export default class GuideBox extends MicroElement {
             true
         )
 
-        /**
-         * TODO: 임시로 이렇게 작업
-         */
-        let isMove = false
-        let shift: number[] = []
-
         this.el.addEventListener('mousedown', (ev) => {
             if (this.isDone) {
                 const rect = this.el.getBoundingClientRect()
-                isMove = true
-                shift = [ev.clientX - rect.left, ev.clientY - rect.top]
+
+                this.outlineAdjustValue.x = ev.clientX - rect.left
+                this.outlineAdjustValue.y = ev.clientY - rect.top
+
+                this.mode = GuideBoxMode.Dragging
             }
         })
 
         this.el.addEventListener('mousemove', (ev) => {
-            if (this.isDone && isMove) {
-                this.outline.x = ev.pageX - shift[0]
-                this.outline.y = ev.pageY - shift[1]
+            if (!this.isDone) {
+                return
+            }
+
+            if (this.mode === GuideBoxMode.Dragging) {
+                this.outline.x = ev.pageX - this.outlineAdjustValue.x
+                this.outline.y = ev.pageY - this.outlineAdjustValue.y
 
                 this.render()
 
@@ -136,8 +151,7 @@ export default class GuideBox extends MicroElement {
         })
 
         this.el.addEventListener('mouseup', () => {
-            isMove = false
-            shift = []
+            this.mode = GuideBoxMode.Default
         })
     }
 
