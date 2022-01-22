@@ -43,7 +43,7 @@ export default class Backdrop extends MicroElement {
             }),
         ].join(' ')
 
-        window.requestAnimationFrame(() => {
+        this.nextTick(() => {
             this.el.className = [
                 styles.container,
                 cx({
@@ -60,7 +60,7 @@ export default class Backdrop extends MicroElement {
             [styles.active]: false,
         })
 
-        window.requestAnimationFrame(() => {
+        this.nextTick(() => {
             this.el.className = cx(styles.container, {
                 [styles.display]: false,
             })

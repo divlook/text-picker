@@ -12,10 +12,10 @@ export abstract class MicroElement {
     constructor() {
         this.emit('created')
 
-        window.requestAnimationFrame(() => {
+        this.nextTick(() => {
             this.render()
 
-            window.requestAnimationFrame(() => {
+            this.nextTick(() => {
                 this.mounted()
 
                 this.emit('mounted')
@@ -76,6 +76,17 @@ export abstract class MicroElement {
             this.off()
 
             el?.remove()
+        }
+    }
+
+    get nextTick() {
+        return (callback?: Function) => {
+            return new Promise<void>((resolve) => {
+                window.requestAnimationFrame(async () => {
+                    await callback?.()
+                    resolve()
+                })
+            })
         }
     }
 

@@ -158,7 +158,7 @@ export default class GuideBox extends MicroElement {
     render() {
         const { x, y, width, height } = this.outline
 
-        window.requestAnimationFrame(() => {
+        this.nextTick(() => {
             this.el.className = [
                 styles.container,
                 cx(
