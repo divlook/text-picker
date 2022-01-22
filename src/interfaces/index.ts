@@ -43,3 +43,9 @@ export interface MicroElementOffMethod {
     (eventName?: 'mounted', callback?: () => void): void
     (eventName?: string, callback?: () => void): void
 }
+
+export type MicroElementClassesArg =
+    | string
+    | string[]
+    | Record<string, any>
+    | Record<string, any>[]

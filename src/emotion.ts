@@ -1,5 +1,5 @@
 import createEmotion from '@emotion/css/create-instance'
 
-export const { css, cx } = createEmotion({
+export const { css } = createEmotion({
     key: 'text-picker',
 })

@@ -1,4 +1,5 @@
 import {
+    MicroElementClassesArg,
     MicroElementEmitMethod,
     MicroElementOffMethod,
     MicroElementOnMethod,
@@ -12,6 +13,30 @@ export abstract class MicroElement {
                 resolve()
             })
         })
+    }
+
+    static classes(...args: MicroElementClassesArg[]) {
+        const validClasses: string[] = []
+
+        for (const arg of args) {
+            if (Array.isArray(arg)) {
+                validClasses.push(MicroElement.classes(...arg))
+                continue
+            }
+
+            if (typeof arg === 'string') {
+                validClasses.push(arg)
+                continue
+            }
+
+            for (const key in arg) {
+                if (!!arg[key]) {
+                    validClasses.push(key)
+                }
+            }
+        }
+
+        return validClasses.join(' ')
     }
 
     el: HTMLElement = document.createElement('div')

@@ -1,4 +1,4 @@
-import { cx, css } from '~/emotion'
+import { css } from '~/emotion'
 import { Coordinate, Outline } from '~/interfaces'
 import { MicroElement } from '~/micro-element'
 
@@ -92,7 +92,7 @@ export default class GuideBox extends MicroElement {
         styles.pointMap.forEach((point) => {
             const div = document.createElement('div')
 
-            div.className = cx(styles.point, point)
+            div.className = MicroElement.classes(styles.point, point)
 
             this.el.appendChild(div)
         })
@@ -159,19 +159,17 @@ export default class GuideBox extends MicroElement {
         const { x, y, width, height } = this.outline
 
         MicroElement.nextTick(() => {
-            this.el.className = [
+            this.el.className = MicroElement.classes([
                 styles.container,
-                cx(
-                    {
-                        [styles.active]: this.isActive,
-                    },
-                    css({
-                        width,
-                        height,
-                        transform: `translate(${x}px, ${y}px)`,
-                    })
-                ),
-            ].join(' ')
+                {
+                    [styles.active]: this.isActive,
+                },
+                css({
+                    width,
+                    height,
+                    transform: `translate(${x}px, ${y}px)`,
+                }),
+            ])
         })
     }
 

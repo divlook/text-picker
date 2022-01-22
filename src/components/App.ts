@@ -1,4 +1,4 @@
-import { cx, css } from '~/emotion'
+import { css } from '~/emotion'
 import { Coordinate } from '~/interfaces'
 import { BlockParser } from '~/block-parser'
 import { MicroElement } from '~/micro-element'
@@ -62,7 +62,7 @@ export default class App extends MicroElement {
     }
 
     render() {
-        this.el.className = [styles.container, cx()].join(' ')
+        this.el.className = MicroElement.classes(styles.container)
     }
 
     start() {
