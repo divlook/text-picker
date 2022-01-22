@@ -69,7 +69,7 @@ export default class App extends MicroElement {
         this.blocks?.claer()
         this.blocks = new BlockParser(document.body)
 
-        this.nextTick(() => {
+        MicroElement.nextTick(() => {
             this.isActive = true
             this.coordinates = []
 

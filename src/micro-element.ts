@@ -5,6 +5,15 @@ import {
 } from '~/interfaces'
 
 export abstract class MicroElement {
+    static nextTick(callback?: Function) {
+        return new Promise<void>((resolve) => {
+            window.requestAnimationFrame(async () => {
+                await callback?.()
+                resolve()
+            })
+        })
+    }
+
     el: HTMLElement = document.createElement('div')
 
     private eventMap = new Map<string, Set<() => void>>()
@@ -12,10 +21,10 @@ export abstract class MicroElement {
     constructor() {
         this.emit('created')
 
-        this.nextTick(() => {
+        MicroElement.nextTick(() => {
             this.render()
 
-            this.nextTick(() => {
+            MicroElement.nextTick(() => {
                 this.mounted()
 
                 this.emit('mounted')
@@ -78,17 +87,6 @@ export abstract class MicroElement {
             await this.beforeDestroy()
 
             el?.remove()
-        }
-    }
-
-    get nextTick() {
-        return (callback?: Function) => {
-            return new Promise<void>((resolve) => {
-                window.requestAnimationFrame(async () => {
-                    await callback?.()
-                    resolve()
-                })
-            })
         }
     }
 
