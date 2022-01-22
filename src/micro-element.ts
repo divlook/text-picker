@@ -70,10 +70,12 @@ export abstract class MicroElement {
     }
 
     get destroy() {
-        return () => {
+        return async () => {
             const el: HTMLElement = this.el as any
 
             this.off()
+
+            await this.beforeDestroy()
 
             el?.remove()
         }
@@ -94,6 +96,8 @@ export abstract class MicroElement {
      * 최초 렌더링된 이후 콜백
      */
     protected mounted() {}
+
+    protected beforeDestroy() {}
 
     /**
      * DOM 렌더링
