@@ -55,8 +55,8 @@ export class Backdrop extends MicroElement {
 }
 
 export namespace Backdrop {
-    export const styles = {
-        container: css`
+    export namespace styles {
+        export const container = css`
             position: fixed;
             top: 0;
             left: 0;
@@ -66,12 +66,14 @@ export namespace Backdrop {
             opacity: 0;
             transition: opacity 0.5s;
             display: none;
-        `,
-        active: css`
-            opacity: 1;
-        `,
-        display: css`
-            display: block;
-        `,
+        `
+
+        export const active = css`
+            opacity: 1 !important;
+        `
+
+        export const display = css`
+            display: block !important;
+        `
     }
 }
