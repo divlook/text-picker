@@ -1,4 +1,4 @@
-import { css } from '~/emotion'
+import { css, cx } from '~/emotion'
 import { Coordinate, Outline } from '~/interfaces'
 import { MicroElement } from '~/micro-element'
 
@@ -76,12 +76,12 @@ export class GuideBox extends MicroElement {
         const { x, y, width, height } = this.outline
 
         MicroElement.nextTick(() => {
-            this.el.className = MicroElement.classes([
+            this.el.className = MicroElement.classes(
                 GuideBox.styles.container,
-                {
+                cx({
                     [GuideBox.styles.active]: this.isActive,
-                },
-            ])
+                })
+            )
 
             this.el.style.width = `${width}px`
             this.el.style.height = `${height}px`

@@ -1,4 +1,4 @@
-import { css } from '~/emotion'
+import { css, cx } from '~/emotion'
 import { MicroElement } from '~/micro-element'
 
 export class Backdrop extends MicroElement {
@@ -16,34 +16,35 @@ export class Backdrop extends MicroElement {
     }
 
     private showAnimation() {
-        this.el.className = MicroElement.classes(Backdrop.styles.container, {
-            [Backdrop.styles.display]: true,
-        })
+        this.el.className = MicroElement.classes(
+            Backdrop.styles.container,
+            cx({
+                [Backdrop.styles.display]: true,
+            })
+        )
 
         MicroElement.nextTick(() => {
-            this.el.className = MicroElement.classes([
+            this.el.className = MicroElement.classes(
                 Backdrop.styles.container,
-                {
+                cx({
                     [Backdrop.styles.display]: true,
                     [Backdrop.styles.active]: true,
-                },
-            ])
+                })
+            )
         })
     }
 
     private hideAnimation() {
-        this.el.className = MicroElement.classes(Backdrop.styles.container, {
-            [Backdrop.styles.display]: true,
-            [Backdrop.styles.active]: false,
-        })
+        this.el.className = MicroElement.classes(
+            Backdrop.styles.container,
+            cx({
+                [Backdrop.styles.display]: true,
+                [Backdrop.styles.active]: false,
+            })
+        )
 
         MicroElement.nextTick(() => {
-            this.el.className = MicroElement.classes([
-                Backdrop.styles.container,
-                {
-                    [Backdrop.styles.display]: false,
-                },
-            ])
+            this.el.className = MicroElement.classes(Backdrop.styles.container)
         })
     }
 
