@@ -24,6 +24,22 @@ export class App extends MicroElement {
         this.guideBox.on('move', () => {
             this.blocks?.select(this.guideBox.outline)
         })
+
+        this.guideBox.on('copy', () => {
+            const text = this.blocks?.toString()
+
+            console.log(text)
+        })
+
+        this.guideBox.on('translate', () => {
+            const text = this.blocks?.toString()
+
+            console.log(text)
+        })
+
+        this.guideBox.on('close', () => {
+            this.clear()
+        })
     }
 
     render() {

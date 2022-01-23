@@ -1,6 +1,7 @@
 import { css, cx } from '~/emotion'
 import { Coordinate, Outline } from '~/interfaces'
 import { MicroElement } from '~/micro-element'
+import { Toolbar } from '~/components/Toolbar'
 
 export class GuideBox extends MicroElement {
     static hasElement(target?: HTMLElement | EventTarget | null) {
@@ -16,6 +17,8 @@ export class GuideBox extends MicroElement {
 
         return el.classList.contains(GuideBox.styles.container)
     }
+
+    toolbar = new Toolbar()
 
     coordinates: Coordinate[] = []
 
@@ -67,9 +70,25 @@ export class GuideBox extends MicroElement {
             this.el.appendChild(div)
         })
 
-        window.addEventListener('mousedown', this.onMouseDown, true)
-        window.addEventListener('mousemove', this.onMouseMove, true)
-        window.addEventListener('mouseup', this.onMouseUp, true)
+        this.el.appendChild(this.toolbar.el)
+
+        this.toolbar.el.classList.add(GuideBox.styles.toolbar)
+
+        window.addEventListener('mousedown', this.onMouseDown)
+        window.addEventListener('mousemove', this.onMouseMove)
+        window.addEventListener('mouseup', this.onMouseUp)
+
+        this.toolbar.on('copy', () => {
+            this.emit('copy')
+        })
+
+        this.toolbar.on('translate', () => {
+            this.emit('translate')
+        })
+
+        this.toolbar.on('close', () => {
+            this.emit('close')
+        })
     }
 
     render() {
@@ -86,13 +105,17 @@ export class GuideBox extends MicroElement {
             this.el.style.width = `${width}px`
             this.el.style.height = `${height}px`
             this.el.style.transform = `translate(${x}px, ${y}px)`
+
+            this.toolbar.setActive(this.isDone)
         })
     }
 
-    protected beforeDestroy() {
-        window.removeEventListener('mousedown', this.onMouseDown, true)
-        window.removeEventListener('mousemove', this.onMouseMove, true)
-        window.removeEventListener('mouseup', this.onMouseUp, true)
+    beforeDestroy() {
+        window.removeEventListener('mousedown', this.onMouseDown)
+        window.removeEventListener('mousemove', this.onMouseMove)
+        window.removeEventListener('mouseup', this.onMouseUp)
+
+        this.toolbar.off()
     }
 
     private calcOutline(nextCoordinates: Coordinate[]) {

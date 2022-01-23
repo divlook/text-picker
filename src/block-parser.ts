@@ -39,6 +39,8 @@ export class BlockParser {
 
     selectedBlocks: BlockNode[] = []
 
+    selectedContents: string[] = []
+
     constructor(root: Element) {
         if (BlockParser.isInlineElement(root)) {
             return
@@ -115,6 +117,7 @@ export class BlockParser {
         }
 
         this.selectedBlocks.splice(0, this.selectedBlocks.length)
+        this.selectedContents.splice(0, this.selectedContents.length)
     }
 
     select(outline: Outline) {
@@ -146,11 +149,9 @@ export class BlockParser {
                         const content = BlockParser.getContent(block.el)
 
                         if (content) {
-                            // TODO: 이걸 복사할 수 있게 해줘야됨
-                            console.log(content)
-
                             block.el.classList.add(activeStyle)
                             this.selectedBlocks.push(block)
+                            this.selectedContents.push(content)
                         }
                         continue
                     }
@@ -161,5 +162,9 @@ export class BlockParser {
 
             arr = nextArr
         }
+    }
+
+    toString() {
+        return this.selectedContents.join('\n\n')
     }
 }
