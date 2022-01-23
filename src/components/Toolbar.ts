@@ -4,25 +4,27 @@ import { MicroElement } from '~/micro-element'
 export class Toolbar extends MicroElement {
     private isActive = false
 
-    mounted() {
-        const buttons = [
-            {
-                label: 'Copy',
-                action: 'copy',
-            },
-            {
-                label: 'Translate',
-                action: 'translate',
-            },
-            {
-                label: 'Close',
-                action: 'close',
-            },
-        ]
+    private stateMap: Map<Toolbar.ActionKey, Toolbar.ActionState> = new Map()
 
+    private buttons: Toolbar.Button[] = [
+        {
+            label: 'Copy',
+            action: 'copy',
+        },
+        {
+            label: 'Translate',
+            action: 'translate',
+        },
+        {
+            label: 'Close',
+            action: 'close',
+        },
+    ]
+
+    mounted() {
         this.el.classList.add(Toolbar.styles.container)
 
-        buttons.forEach((row) => {
+        this.buttons.forEach((row) => {
             const button = document.createElement('button')
 
             button.textContent = row.label
@@ -37,6 +39,41 @@ export class Toolbar extends MicroElement {
     }
 
     render() {
+        this.buttons.forEach(({ action }) => {
+            const state = this.stateMap.get(action)
+
+            const button = this.el.querySelector(`[data-action="${action}"]`)
+
+            if (!button) return
+
+            if (state) {
+                if (button.classList.contains(Toolbar.styles.successButton)) {
+                    if (!state.success) {
+                        button.classList.remove(Toolbar.styles.successButton)
+                    }
+                } else {
+                    if (state.success) {
+                        button.classList.add(Toolbar.styles.successButton)
+                    }
+                }
+
+                if (button.classList.contains(Toolbar.styles.failButton)) {
+                    if (state.success) {
+                        button.classList.remove(Toolbar.styles.failButton)
+                    }
+                } else {
+                    if (!state.success) {
+                        button.classList.add(Toolbar.styles.failButton)
+                    }
+                }
+
+                return
+            }
+
+            button.classList.remove(Toolbar.styles.successButton)
+            button.classList.remove(Toolbar.styles.failButton)
+        })
+
         if (this.isActive) {
             this.showAnimation()
             return
@@ -56,10 +93,11 @@ export class Toolbar extends MicroElement {
 
     private onClick = (ev: MouseEvent) => {
         const el = ev.target as HTMLElement
+        const action = el.dataset.action as Toolbar.ActionKey | undefined
 
         ev.stopPropagation()
 
-        switch (el.dataset.action) {
+        switch (action) {
             case 'copy': {
                 this.emit('copy')
                 break
@@ -93,9 +131,37 @@ export class Toolbar extends MicroElement {
         this.isActive = active
         this.render()
     }
+
+    setActionState(key: Toolbar.ActionKey, success: boolean) {
+        const actionState = this.stateMap.get(key)
+
+        clearTimeout(actionState?.timeoutId)
+
+        this.stateMap.set(key, {
+            success,
+            timeoutId: window.setTimeout(() => {
+                this.stateMap.delete(key)
+                this.render()
+            }, 1000),
+        })
+
+        this.render()
+    }
 }
 
 export namespace Toolbar {
+    export type ActionKey = 'copy' | 'translate' | 'close'
+
+    export interface Button {
+        label: string
+        action: ActionKey
+    }
+
+    export interface ActionState {
+        success: boolean
+        timeoutId: number
+    }
+
     export namespace styles {
         export const container = css`
             padding: 4px 6px 0;
@@ -122,6 +188,7 @@ export namespace Toolbar {
             border-radius: 4px;
             cursor: pointer;
             box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
+            transition: background 0.3s;
 
             &:hover {
                 background: dodgerblue;
@@ -136,6 +203,14 @@ export namespace Toolbar {
             &:last-child {
                 margin-right: 0;
             }
+        `
+
+        export const successButton = css`
+            background: mediumseagreen !important;
+        `
+
+        export const failButton = css`
+            background: tomato !important;
         `
     }
 }

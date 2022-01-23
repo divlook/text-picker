@@ -1,3 +1,4 @@
+import clipboardy from 'clipboardy'
 import { css } from '~/emotion'
 import { Coordinate } from '~/interfaces'
 import { BlockParser } from '~/block-parser'
@@ -25,16 +26,36 @@ export class App extends MicroElement {
             this.blocks?.select(this.guideBox.outline)
         })
 
-        this.guideBox.on('copy', () => {
+        this.guideBox.on('copy', async () => {
             const text = this.blocks?.toString()
 
-            console.log(text)
+            if (text) {
+                try {
+                    await clipboardy.write(text)
+                    this.guideBox.toolbar.setActionState('copy', true)
+                    return
+                } catch {
+                    //
+                }
+            }
+
+            this.guideBox.toolbar.setActionState('copy', false)
         })
 
         this.guideBox.on('translate', () => {
             const text = this.blocks?.toString()
 
-            console.log(text)
+            if (text) {
+                const encodedText = encodeURIComponent(text)
+                const url = `https://translate.google.com/?sl=auto&text=${encodedText}`
+
+                this.guideBox.toolbar.setActionState('translate', true)
+
+                window.open(url)
+                return
+            }
+
+            this.guideBox.toolbar.setActionState('translate', false)
         })
 
         this.guideBox.on('close', () => {
