@@ -10,7 +10,7 @@ export class App extends MicroElement {
     backdrop = new Backdrop()
     guideBox = new GuideBox()
 
-    private isActive = false
+    isActive = false
 
     coordinates: Coordinate[] = []
 

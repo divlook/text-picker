@@ -4,3 +4,6 @@ dist
 dist-ssr
 *.local
 .history
+
+# chrome build dir
+/release

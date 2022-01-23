@@ -1,0 +1,67 @@
+#!/usr/bin/env node
+
+const path = require('path')
+const fs = require('fs')
+const { execSync } = require('child_process')
+const { version } = require('../package.json')
+
+const rootDir = (...paths) => path.resolve(__dirname, '../', ...paths)
+
+const buildDir = rootDir(`release/text-picker@${version}`)
+
+clearBuildDir()
+
+build('background')
+
+build('content')
+
+createManifest()
+
+function clearBuildDir() {
+    if (fs.existsSync(buildDir)) {
+        fs.rmSync(buildDir, {
+            force: true,
+            recursive: true,
+        })
+    }
+
+    fs.mkdirSync(buildDir, {
+        recursive: true,
+    })
+}
+
+function build(mode) {
+    const pnpm = '$(pnpm bin)'
+    const cmd = [
+        `${pnpm}/tsc && ${pnpm}/vite build -c vite.chrome.config.ts`,
+        `--mode ${mode}`,
+    ].join(' ')
+
+    return execSync(cmd)
+}
+
+function createManifest() {
+    const json = {
+        name: 'Text Picker',
+        version,
+        manifest_version: 3,
+        permissions: ['activeTab'],
+        background: {
+            service_worker: 'background.js',
+        },
+        action: {
+            default_title: 'Text Picker',
+        },
+        content_scripts: [
+            {
+                matches: ['<all_urls>'],
+                js: ['content.js'],
+            },
+        ],
+    }
+
+    fs.writeFileSync(
+        path.join(buildDir, 'manifest.json'),
+        JSON.stringify(json, null, 4)
+    )
+}
