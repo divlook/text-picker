@@ -2,7 +2,7 @@ import { css } from '~/emotion'
 import { Coordinate } from '~/interfaces'
 import { BlockParser } from '~/block-parser'
 import { MicroElement } from '~/micro-element'
-import GuideBox, { styles as guideBoxStyles } from '~/components/GuideBox'
+import { GuideBox } from '~/components/GuideBox'
 import Backdrop from '~/components/Backdrop'
 
 const styles = {
@@ -33,8 +33,8 @@ export default class App extends MicroElement {
                     const target = ev.target as HTMLElement
 
                     const isActive = [
-                        target.classList.contains(guideBoxStyles.container),
-                        !!target.closest(`.${guideBoxStyles.container}`),
+                        target.classList.contains(GuideBox.styles.container),
+                        !!target.closest(`.${GuideBox.styles.container}`),
                     ].some((value) => value)
 
                     if (isActive) {

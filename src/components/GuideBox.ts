@@ -2,65 +2,10 @@ import { css } from '~/emotion'
 import { Coordinate, Outline } from '~/interfaces'
 import { MicroElement } from '~/micro-element'
 
-export enum GuideBoxMode {
-    Default,
-    Dragging,
-}
-
-export const styles = {
-    container: css({
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        zIndex: 10000, // TODO:
-        borderWidth: 2,
-        borderColor: 'dodgerblue',
-        borderStyle: 'dashed',
-        width: 0,
-        height: 0,
-        transform: `translate(0, 10px)`,
-        boxSizing: 'border-box',
-        cursor: 'move',
-        display: 'none',
-    }),
-    active: css({
-        display: 'block',
-    }),
-    point: css({
-        position: 'absolute',
-        cursor: 'grab',
-        width: 10,
-        height: 10,
-        backgroundColor: 'dodgerblue',
-    }),
-    pointMap: [
-        css({
-            top: -6,
-            left: -6,
-            cursor: 'nwse-resize',
-        }),
-        css({
-            top: -6,
-            right: -6,
-            cursor: 'nesw-resize',
-        }),
-        css({
-            bottom: -6,
-            right: -6,
-            cursor: 'nwse-resize',
-        }),
-        css({
-            bottom: -6,
-            left: -6,
-            cursor: 'nesw-resize',
-        }),
-    ],
-}
-
-export default class GuideBox extends MicroElement {
+export class GuideBox extends MicroElement {
     coordinates: Coordinate[] = []
 
-    mode = GuideBoxMode.Default
+    mode = GuideBox.mode.Default
 
     outline: Outline = {
         x: 0,
@@ -69,12 +14,9 @@ export default class GuideBox extends MicroElement {
         height: 0,
     }
 
-    private outlineAdjustValue: Outline = {
-        x: 0,
-        y: 0,
-        width: 0,
-        height: 0,
-    }
+    private outlineAdjustPoint: Coordinate = [0, 0]
+
+    private dragTargetClassName = ''
 
     get isActive() {
         return this.coordinates.length > 0
@@ -89,70 +31,31 @@ export default class GuideBox extends MicroElement {
     }
 
     mounted() {
-        styles.pointMap.forEach((point) => {
+        const pointClassNames = [
+            GuideBox.styles.pointTop,
+            GuideBox.styles.pointBottom,
+            GuideBox.styles.pointLeft,
+            GuideBox.styles.pointRight,
+            GuideBox.styles.pointTopLeft,
+            GuideBox.styles.pointTopRight,
+            GuideBox.styles.pointBottomLeft,
+            GuideBox.styles.pointBottomRight,
+        ]
+
+        pointClassNames.forEach((className) => {
             const div = document.createElement('div')
 
-            div.className = MicroElement.classes(styles.point, point)
+            div.className = MicroElement.classes(
+                GuideBox.styles.point,
+                className
+            )
 
             this.el.appendChild(div)
         })
 
-        // TODO: 크기 변형할 수 있게 해야됨
-
-        window.addEventListener(
-            'mousemove',
-            (ev) => {
-                if (this.isAutoDraw) {
-                    this.calcOutline([
-                        ...this.coordinates,
-                        [
-                            ev.clientX + window.scrollX,
-                            ev.clientY + window.scrollY,
-                        ],
-                    ])
-
-                    this.render()
-
-                    this.emit('move')
-                }
-
-                if (this.mode === GuideBoxMode.Dragging) {
-                    // 드래그로 상자 움직일 때 텍스트 선택되는 현상 방지
-                    ev.preventDefault()
-                }
-            },
-            true
-        )
-
-        this.el.addEventListener('mousedown', (ev) => {
-            if (this.isDone) {
-                const rect = this.el.getBoundingClientRect()
-
-                this.outlineAdjustValue.x = ev.clientX - rect.left
-                this.outlineAdjustValue.y = ev.clientY - rect.top
-
-                this.mode = GuideBoxMode.Dragging
-            }
-        })
-
-        this.el.addEventListener('mousemove', (ev) => {
-            if (!this.isDone) {
-                return
-            }
-
-            if (this.mode === GuideBoxMode.Dragging) {
-                this.outline.x = ev.pageX - this.outlineAdjustValue.x
-                this.outline.y = ev.pageY - this.outlineAdjustValue.y
-
-                this.render()
-
-                this.emit('move')
-            }
-        })
-
-        this.el.addEventListener('mouseup', () => {
-            this.mode = GuideBoxMode.Default
-        })
+        window.addEventListener('mousedown', this.onMouseDown, true)
+        window.addEventListener('mousemove', this.onMouseMove, true)
+        window.addEventListener('mouseup', this.onMouseUp, true)
     }
 
     render() {
@@ -160,17 +63,23 @@ export default class GuideBox extends MicroElement {
 
         MicroElement.nextTick(() => {
             this.el.className = MicroElement.classes([
-                styles.container,
+                GuideBox.styles.container,
                 {
-                    [styles.active]: this.isActive,
+                    [GuideBox.styles.active]: this.isActive,
                 },
-                css({
-                    width,
-                    height,
-                    transform: `translate(${x}px, ${y}px)`,
-                }),
+                css`
+                    width: ${width}px;
+                    height: ${height}px;
+                    transform: translate(${x}px, ${y}px);
+                `,
             ])
         })
+    }
+
+    protected beforeDestroy() {
+        window.removeEventListener('mousedown', this.onMouseDown, true)
+        window.removeEventListener('mousemove', this.onMouseMove, true)
+        window.removeEventListener('mouseup', this.onMouseUp, true)
     }
 
     private calcOutline(nextCoordinates: Coordinate[]) {
@@ -205,6 +114,145 @@ export default class GuideBox extends MicroElement {
         this.outline.height = endY - startY
     }
 
+    private onMouseDown = (ev: MouseEvent) => {
+        if (this.isDone) {
+            const target = ev.target as HTMLElement
+            const targetClassNames = [
+                GuideBox.styles.container,
+                GuideBox.styles.pointTop,
+                GuideBox.styles.pointBottom,
+                GuideBox.styles.pointLeft,
+                GuideBox.styles.pointRight,
+                GuideBox.styles.pointTopLeft,
+                GuideBox.styles.pointTopRight,
+                GuideBox.styles.pointBottomLeft,
+                GuideBox.styles.pointBottomRight,
+            ]
+
+            targetClassNames.some((className) => {
+                if (target.classList.contains(className)) {
+                    this.dragTargetClassName = className
+                    return true
+                }
+
+                return false
+            })
+
+            switch (this.dragTargetClassName) {
+                case GuideBox.styles.container: {
+                    const rect = this.el.getBoundingClientRect()
+
+                    this.outlineAdjustPoint = [
+                        ev.clientX - rect.left,
+                        ev.clientY - rect.top,
+                    ]
+                    break
+                }
+
+                case GuideBox.styles.pointTop:
+                case GuideBox.styles.pointLeft:
+                case GuideBox.styles.pointTopLeft: {
+                    this.outlineAdjustPoint = [
+                        this.outline.x + this.outline.width,
+                        this.outline.y + this.outline.height,
+                    ]
+                    break
+                }
+
+                case GuideBox.styles.pointRight:
+                case GuideBox.styles.pointTopRight: {
+                    this.outlineAdjustPoint = [
+                        this.outline.x,
+                        this.outline.y + this.outline.height,
+                    ]
+                    break
+                }
+
+                case GuideBox.styles.pointBottom:
+                case GuideBox.styles.pointBottomLeft: {
+                    this.outlineAdjustPoint = [
+                        this.outline.x + this.outline.width,
+                        this.outline.y,
+                    ]
+                    break
+                }
+
+                case GuideBox.styles.pointBottomRight: {
+                    this.outlineAdjustPoint = [this.outline.x, this.outline.y]
+                    break
+                }
+            }
+
+            this.mode = GuideBox.mode.Dragging
+        }
+    }
+
+    private onMouseMove = (ev: MouseEvent) => {
+        if (this.mode === GuideBox.mode.Dragging) {
+            // 드래그로 상자 움직일 때 텍스트 선택되는 현상 방지
+            ev.preventDefault()
+        }
+
+        if (this.isAutoDraw) {
+            this.calcOutline([
+                ...this.coordinates,
+                [ev.clientX + window.scrollX, ev.clientY + window.scrollY],
+            ])
+
+            this.render()
+
+            this.emit('move')
+            return
+        }
+
+        if (this.isDone) {
+            if (this.mode === GuideBox.mode.Dragging) {
+                switch (this.dragTargetClassName) {
+                    case GuideBox.styles.container: {
+                        this.outline.x = ev.pageX - this.outlineAdjustPoint[0]
+                        this.outline.y = ev.pageY - this.outlineAdjustPoint[1]
+                        break
+                    }
+
+                    case GuideBox.styles.pointTop:
+                    case GuideBox.styles.pointBottom: {
+                        this.calcOutline([
+                            [this.outline.x, this.outlineAdjustPoint[1]],
+                            [this.outline.x + this.outline.width, ev.pageY],
+                        ])
+                        break
+                    }
+
+                    case GuideBox.styles.pointLeft:
+                    case GuideBox.styles.pointRight: {
+                        this.calcOutline([
+                            [this.outlineAdjustPoint[0], this.outline.y],
+                            [ev.pageX, this.outline.y + this.outline.height],
+                        ])
+                        break
+                    }
+
+                    default: {
+                        this.calcOutline([
+                            this.outlineAdjustPoint,
+                            [ev.pageX, ev.pageY],
+                        ])
+                        break
+                    }
+                }
+
+                this.render()
+
+                this.emit('move')
+            }
+            return
+        }
+    }
+
+    private onMouseUp = () => {
+        this.mode = GuideBox.mode.Default
+    }
+
     setPoint(x: number, y: number) {
         if (this.coordinates.length === 2) {
             this.coordinates = []
@@ -221,5 +269,84 @@ export default class GuideBox extends MicroElement {
         this.coordinates = []
 
         this.render()
+    }
+}
+
+export namespace GuideBox {
+    export enum mode {
+        Default,
+        Dragging,
+    }
+
+    export const styles = {
+        container: css`
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10000;
+            border-width: 2px;
+            border-color: dodgerblue;
+            border-style: dashed;
+            width: 0;
+            height: 0;
+            transform: translate(0, 10px);
+            box-sizing: border-box;
+            cursor: move;
+            display: none;
+        `,
+        active: css`
+            display: block;
+        `,
+        point: css`
+            position: absolute;
+            cursor: grab;
+            width: 10px;
+            height: 10px;
+            background-color: dodgerblue;
+        `,
+        pointTop: css`
+            top: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            cursor: ns-resize;
+        `,
+        pointBottom: css`
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            cursor: ns-resize;
+        `,
+        pointLeft: css`
+            top: 50%;
+            left: -6px;
+            transform: translateY(-50%);
+            cursor: ew-resize;
+        `,
+        pointRight: css`
+            top: 50%;
+            right: -6px;
+            transform: translateY(-50%);
+            cursor: ew-resize;
+        `,
+        pointTopLeft: css`
+            top: -6px;
+            left: -6px;
+            cursor: nwse-resize;
+        `,
+        pointTopRight: css`
+            top: -6px;
+            right: -6px;
+            cursor: nesw-resize;
+        `,
+        pointBottomLeft: css`
+            bottom: -6px;
+            left: -6px;
+            cursor: nesw-resize;
+        `,
+        pointBottomRight: css`
+            bottom: -6px;
+            right: -6px;
+            cursor: nwse-resize;
+        `,
     }
 }
