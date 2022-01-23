@@ -20,9 +20,11 @@ export class BlockParser {
         Array.from(cloneEl.querySelectorAll('img')).forEach((img) => {
             const span = document.createElement('span')
 
-            span.textContent = img.alt
+            if (img.alt) {
+                span.textContent = `image(${img.alt})`
 
-            img.parentElement?.replaceChild(span, img)
+                img.parentElement?.replaceChild(span, img)
+            }
         })
 
         return cloneEl.textContent
