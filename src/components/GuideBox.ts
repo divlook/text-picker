@@ -3,6 +3,20 @@ import { Coordinate, Outline } from '~/interfaces'
 import { MicroElement } from '~/micro-element'
 
 export class GuideBox extends MicroElement {
+    static hasElement(target?: HTMLElement | EventTarget | null) {
+        const el = target as HTMLElement
+
+        if (!el) {
+            return false
+        }
+
+        if (!!el.closest(`.${GuideBox.styles.container}`)) {
+            return true
+        }
+
+        return el.classList.contains(GuideBox.styles.container)
+    }
+
     coordinates: Coordinate[] = []
 
     mode = GuideBox.mode.Default
@@ -67,12 +81,11 @@ export class GuideBox extends MicroElement {
                 {
                     [GuideBox.styles.active]: this.isActive,
                 },
-                css`
-                    width: ${width}px;
-                    height: ${height}px;
-                    transform: translate(${x}px, ${y}px);
-                `,
             ])
+
+            this.el.style.width = `${width}px`
+            this.el.style.height = `${height}px`
+            this.el.style.transform = `translate(${x}px, ${y}px)`
         })
     }
 

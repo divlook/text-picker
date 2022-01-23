@@ -3,16 +3,9 @@ import { Coordinate } from '~/interfaces'
 import { BlockParser } from '~/block-parser'
 import { MicroElement } from '~/micro-element'
 import { GuideBox } from '~/components/GuideBox'
-import Backdrop from '~/components/Backdrop'
+import { Backdrop } from '~/components/Backdrop'
 
-const styles = {
-    container: css(),
-    crosshair: css({
-        cursor: 'crosshair',
-    }),
-}
-
-export default class App extends MicroElement {
+export class App extends MicroElement {
     backdrop = new Backdrop()
     guideBox = new GuideBox()
 
@@ -26,35 +19,7 @@ export default class App extends MicroElement {
         this.el.appendChild(this.backdrop.el)
         this.el.appendChild(this.guideBox.el)
 
-        window.addEventListener(
-            'click',
-            (ev) => {
-                if (this.guideBox.isDone) {
-                    const target = ev.target as HTMLElement
-
-                    const isActive = [
-                        target.classList.contains(GuideBox.styles.container),
-                        !!target.closest(`.${GuideBox.styles.container}`),
-                    ].some((value) => value)
-
-                    if (isActive) {
-                        return
-                    }
-
-                    this.clear()
-
-                    return
-                }
-
-                if (this.isActive) {
-                    const x = ev.clientX + window.scrollX
-                    const y = ev.clientY + window.scrollY
-
-                    this.setPoint(x, y)
-                }
-            },
-            true
-        )
+        window.addEventListener('click', this.onClick, true)
 
         this.guideBox.on('move', () => {
             this.blocks?.select(this.guideBox.outline)
@@ -62,7 +27,31 @@ export default class App extends MicroElement {
     }
 
     render() {
-        this.el.className = MicroElement.classes(styles.container)
+        this.el.className = MicroElement.classes(App.styles.container)
+    }
+
+    beforeDestroy() {
+        window.removeEventListener('click', this.onClick, true)
+        this.guideBox.off()
+    }
+
+    private onClick = (ev: MouseEvent) => {
+        if (this.guideBox.isDone) {
+            if (GuideBox.hasElement(ev.target)) {
+                return
+            }
+
+            this.clear()
+
+            return
+        }
+
+        if (this.isActive) {
+            const x = ev.clientX + window.scrollX
+            const y = ev.clientY + window.scrollY
+
+            this.setPoint(x, y)
+        }
     }
 
     start() {
@@ -73,11 +62,11 @@ export default class App extends MicroElement {
             this.isActive = true
             this.coordinates = []
 
-            if (document.body.classList.contains(styles.crosshair)) {
-                document.body.classList.remove(styles.crosshair)
+            if (document.body.classList.contains(App.styles.crosshair)) {
+                document.body.classList.remove(App.styles.crosshair)
             }
 
-            document.body.classList.add(styles.crosshair)
+            document.body.classList.add(App.styles.crosshair)
 
             this.backdrop.setActive(true)
         })
@@ -95,7 +84,7 @@ export default class App extends MicroElement {
 
         if (this.coordinates.length === 2) {
             this.isActive = false
-            document.body.classList.remove(styles.crosshair)
+            document.body.classList.remove(App.styles.crosshair)
         }
     }
 
@@ -104,5 +93,14 @@ export default class App extends MicroElement {
         this.coordinates = []
         this.blocks?.claer()
         this.render()
+    }
+}
+
+export namespace App {
+    export const styles = {
+        container: css``,
+        crosshair: css`
+            cursor: crosshair;
+        `,
     }
 }
