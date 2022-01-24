@@ -27,10 +27,22 @@ export class BlockParser {
             }
         })
 
-        return cloneEl.textContent
-            ?.split('\n')
-            .map((row) => row.trim())
-            .join('')
+        return (cloneEl.textContent || '')
+            .split('\n')
+            .reduce((resultText, row) => {
+                const rowText = row.trim()
+
+                if (!resultText) {
+                    return rowText
+                }
+
+                if (rowText) {
+                    resultText += '\n'
+                    resultText += rowText
+                }
+
+                return resultText
+            }, '')
     }
 
     /**
