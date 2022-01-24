@@ -10,12 +10,12 @@ const activeStyle = css`
 `
 
 export class BlockParser {
-    static isInlineElement(el: Element) {
+    static isInlineElement(el: HTMLElement) {
         return window.getComputedStyle(el)?.display?.includes?.('inline')
     }
 
-    static getContent(el: Element) {
-        const cloneEl = el.cloneNode(true) as Element
+    static getContent(el: HTMLElement) {
+        const cloneEl = el.cloneNode(true) as HTMLElement
 
         Array.from(cloneEl.querySelectorAll('img')).forEach((img) => {
             const span = document.createElement('span')
@@ -67,52 +67,66 @@ export class BlockParser {
         return zIndex
     }
 
+    rootElement
+
     blockMap = new Map<Symbol, BlockNode>()
+
+    blockMapByElement = new Map<HTMLElement, BlockNode>()
 
     offsetMap = new Map<Symbol, Offset>()
 
-    selectedBlocks: BlockNode[] = []
+    selectedBlockIdSet: Set<Symbol> = new Set()
 
     selectedContents: string[] = []
 
-    constructor(root: Element) {
+    constructor(root: HTMLElement) {
+        this.rootElement = root
+
         if (BlockParser.isInlineElement(root)) {
             return
         }
 
-        const block = this.parse(root)
+        this.parse(root)
+    }
+
+    private parse(el: HTMLElement) {
+        const cachedBlock = this.blockMapByElement.get(el)
+
+        if (cachedBlock) {
+            return cachedBlock
+        }
+
+        const id = Symbol()
+
+        const childs: Map<Symbol, BlockNode> = new Map()
+
+        const block: BlockNode = {
+            id,
+            el,
+            childs,
+        }
 
         this.blockMap.set(block.id, block)
 
+        this.blockMapByElement.set(el, block)
+
         this.parseOffset(block)
-    }
 
-    private parse(el: Element): BlockNode {
-        const id = Symbol()
-        const childs: Map<Symbol, BlockNode> = new Map()
-
-        for (const child of Array.from(el.children)) {
+        for (const child of Array.from(el.children) as HTMLElement[]) {
             if (BlockParser.isInlineElement(child)) {
                 continue
             }
 
             const childBlock = this.parse(child)
 
-            childBlock.parentId = id
-
-            childs.set(childBlock.id, childBlock)
-
-            this.parseOffset(childBlock)
+            childBlock.parentId = block.id
+            block.childs.set(childBlock.id, childBlock)
         }
 
-        return {
-            id,
-            el,
-            childs,
-        }
+        return block
     }
 
-    private parseOffset(node: BlockNode) {
+    private parseOffset(block: BlockNode) {
         const offset: Offset = {
             top: 0,
             bottom: 0,
@@ -120,23 +134,25 @@ export class BlockParser {
             right: 0,
         }
 
-        const parentBlock = node.parentId && this.blockMap.get(node.parentId)
+        const offsetParentElement = block.el.offsetParent as HTMLElement | null
 
-        if (parentBlock) {
-            const parentEl = parentBlock.el as HTMLElement
+        if (offsetParentElement) {
+            const parentBlock = this.parse(offsetParentElement)
 
-            offset.top += parentEl.offsetTop
-            offset.left += parentEl.offsetLeft
+            if (parentBlock) {
+                offset.top += offsetParentElement.offsetTop
+                offset.left += offsetParentElement.offsetLeft
+            }
         }
 
-        const currentEl = node.el as HTMLElement
+        const currentEl = block.el as HTMLElement
 
         offset.top += currentEl.offsetTop
         offset.bottom += offset.top + currentEl.clientHeight
         offset.left += currentEl.offsetLeft
         offset.right += offset.left + currentEl.clientWidth
 
-        this.offsetMap.set(node.id, offset)
+        this.offsetMap.set(block.id, offset)
     }
 
     claer() {
@@ -146,11 +162,15 @@ export class BlockParser {
     }
 
     unselect() {
-        for (const block of this.selectedBlocks) {
-            block.el.classList.remove(activeStyle)
-        }
+        this.selectedBlockIdSet.forEach((id) => {
+            const block = this.blockMap.get(id)
 
-        this.selectedBlocks.splice(0, this.selectedBlocks.length)
+            if (block) {
+                block.el.classList.remove(activeStyle)
+            }
+        })
+
+        this.selectedBlockIdSet.clear()
         this.selectedContents.splice(0, this.selectedContents.length)
     }
 
@@ -162,12 +182,20 @@ export class BlockParser {
         const startY = outline.y
         const endY = startY + outline.height
 
-        let arr = Array.from(this.blockMap.values())
+        const root = this.blockMapByElement.get(this.rootElement)
+
+        let arr = Array.from(root?.childs.values() || [])
 
         while (arr.length) {
             const nextArr: BlockNode[] = []
 
             for (const block of arr) {
+                const { parentId } = block
+
+                if (parentId && this.selectedBlockIdSet.has(parentId)) {
+                    continue
+                }
+
                 const offset = this.offsetMap.get(block.id)
 
                 if (offset) {
@@ -184,7 +212,7 @@ export class BlockParser {
 
                         if (content) {
                             block.el.classList.add(activeStyle)
-                            this.selectedBlocks.push(block)
+                            this.selectedBlockIdSet.add(block.id)
                             this.selectedContents.push(content)
                         }
                         continue

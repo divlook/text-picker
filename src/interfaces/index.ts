@@ -15,7 +15,7 @@ export interface Offset {
 export interface BlockNode {
     id: Symbol
     parentId?: Symbol
-    el: Element
+    el: HTMLElement
     childs: Map<Symbol, BlockNode>
 }
 
