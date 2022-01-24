@@ -31,6 +31,8 @@ export class GuideBox extends MicroElement {
         height: 0,
     }
 
+    private zIndex = 0
+
     private outlineAdjustPoint: Coordinate = [0, 0]
 
     private dragTargetClassName = ''
@@ -93,6 +95,8 @@ export class GuideBox extends MicroElement {
 
     render() {
         const { x, y, width, height } = this.outline
+
+        this.el.style.zIndex = String(this.zIndex)
 
         MicroElement.nextTick(() => {
             this.el.className = MicroElement.classes(
@@ -298,6 +302,11 @@ export class GuideBox extends MicroElement {
 
         this.calcOutline(this.coordinates)
 
+        this.render()
+    }
+
+    setZIndex(zIndex: number) {
+        this.zIndex = zIndex
         this.render()
     }
 

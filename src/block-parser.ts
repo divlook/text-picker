@@ -33,6 +33,28 @@ export class BlockParser {
             .join('')
     }
 
+    /**
+     * Get z-index
+     *
+     * `position`이 'static'이 아닌 요소, 즉 'relative', 'absolute', 'fixed', 'sticky'의 z-index를 가져옴
+     */
+    static getZIndex(el: HTMLElement): number {
+        const style = window.getComputedStyle(el)
+
+        const zIndex = parseInt(style.zIndex) || 0
+        const position = style.position
+
+        if (style.display !== 'none' && position === 'static') {
+            const children = Array.from(el.children) as HTMLElement[]
+
+            return children.reduce((zIndex, child) => {
+                return Math.max(zIndex, BlockParser.getZIndex(child))
+            }, 0)
+        }
+
+        return zIndex
+    }
+
     blockMap = new Map<Symbol, BlockNode>()
 
     offsetMap = new Map<Symbol, Offset>()

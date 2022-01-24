@@ -92,6 +92,11 @@ export class App extends MicroElement {
     }
 
     start() {
+        const zIndex = BlockParser.getZIndex(document.body)
+
+        this.backdrop.setZIndex(zIndex)
+        this.guideBox.setZIndex(zIndex)
+
         this.blocks?.claer()
         this.blocks = new BlockParser(document.body)
 

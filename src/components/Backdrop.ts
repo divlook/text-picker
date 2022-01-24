@@ -2,11 +2,15 @@ import { css, cx } from '~/emotion'
 import { MicroElement } from '~/micro-element'
 
 export class Backdrop extends MicroElement {
-    el = document.createElement('span')
+    el = document.createElement('div')
 
     private isActive = false
 
+    private zIndex = 0
+
     render() {
+        this.el.style.zIndex = String(this.zIndex)
+
         if (this.isActive) {
             this.showAnimation()
             return
@@ -50,6 +54,11 @@ export class Backdrop extends MicroElement {
 
     setActive(active: boolean) {
         this.isActive = active
+        this.render()
+    }
+
+    setZIndex(zIndex: number) {
+        this.zIndex = zIndex
         this.render()
     }
 }
