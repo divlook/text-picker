@@ -42,6 +42,11 @@ function createManifest() {
         name: 'Text Picker',
         version,
         manifest_version: 3,
+        icons: {
+            16: '/icon@16.png',
+            48: '/icon@48.png',
+            128: '/icon@128.png',
+        },
         permissions: ['activeTab'],
         background: {
             service_worker: 'background.js',
