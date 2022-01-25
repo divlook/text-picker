@@ -1,5 +1,7 @@
 import { css } from '~/emotion'
 import { MicroElement } from '~/micro-element'
+import { black, dodger_blue, white } from '~/palette'
+import { rgb } from '~/utils'
 
 export class Toolbar extends MicroElement {
     private isActive = false
@@ -166,7 +168,7 @@ export namespace Toolbar {
         export const container = css`
             padding: 4px 6px 0;
             border-radius: 6px;
-            background: rgba(0, 0, 0, 0.1);
+            background: ${rgb(black, 10)};
             backdrop-filter: blur(2px);
             cursor: default;
             display: none;
@@ -179,20 +181,20 @@ export namespace Toolbar {
         export const button = css`
             font-family: sans-serif;
             font-size: 14px;
-            background: rgba(255, 255, 255, 0.5);
-            color: rgba(0, 0, 0, 0.5);
-            border: 1px solid white;
+            background: ${rgb(white, 50)};
+            color: ${rgb(black, 50)};
+            border: 1px solid ${rgb(white)};
             padding: 0.4em 0.8em;
             margin-right: 6px;
             margin-bottom: 4px;
             border-radius: 4px;
             cursor: pointer;
-            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 2px 0 ${rgb(black, 20)};
             transition: background 0.3s;
 
             &:hover {
-                background: dodgerblue;
-                color: white;
+                background: ${rgb(dodger_blue)};
+                color: ${rgb(white)};
             }
 
             &:active {

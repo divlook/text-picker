@@ -1,13 +1,7 @@
 import { css } from '~/emotion'
 import { Offset, Outline } from '~/interfaces'
-
-const activeStyle = css`
-    background-color: rgb(0 164 255 / 20%) !important;
-    outline-style: solid !important;
-    outline-color: rgb(0 164 255) !important;
-    outline-width: 1px !important;
-    outline-offset: -1px !important;
-`
+import { azure_radiance_1441 } from '~/palette'
+import { rgb } from '~/utils'
 
 export class BlockParser {
     static getContent(el: HTMLElement) {
@@ -152,7 +146,7 @@ export class BlockParser {
             const block = this.blockMap.get(id)
 
             if (block) {
-                block.el.classList.remove(activeStyle)
+                block.el.classList.remove(BlockParser.styles.active)
             }
         })
 
@@ -204,7 +198,7 @@ export class BlockParser {
                         const content = BlockParser.getContent(block.el)
 
                         if (content) {
-                            block.el.classList.add(activeStyle)
+                            block.el.classList.add(BlockParser.styles.active)
                             this.selectedBlockIdSet.add(block.id)
                             this.selectedContents.push(content)
                         }
@@ -238,5 +232,14 @@ export namespace BlockParser {
         parentId?: Symbol
         el: HTMLElement
         childs: Map<Symbol, BlockNode>
+    }
+    export namespace styles {
+        export const active = css`
+            background-color: ${rgb(azure_radiance_1441, 20)} !important;
+            outline-style: solid !important;
+            outline-color: ${rgb(azure_radiance_1441)} !important;
+            outline-width: 1px !important;
+            outline-offset: -1px !important;
+        `
     }
 }

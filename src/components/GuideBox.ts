@@ -2,6 +2,8 @@ import { css, cx } from '~/emotion'
 import { Coordinate, Outline } from '~/interfaces'
 import { MicroElement } from '~/micro-element'
 import { Toolbar } from '~/components/Toolbar'
+import { rgb } from '~/utils'
+import { dodger_blue } from '~/palette'
 
 export class GuideBox extends MicroElement {
     toolbar = new Toolbar()
@@ -349,7 +351,7 @@ export namespace GuideBox {
             left: 0;
             z-index: 10000;
             border-width: 2px;
-            border-color: dodgerblue;
+            border-color: ${rgb(dodger_blue)};
             border-style: dashed;
             width: 0;
             height: 0;
@@ -368,7 +370,7 @@ export namespace GuideBox {
             cursor: grab;
             width: 10px;
             height: 10px;
-            background-color: dodgerblue;
+            background-color: ${rgb(dodger_blue)};
         `
 
         export const pointTop = css`

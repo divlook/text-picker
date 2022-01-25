@@ -1,5 +1,7 @@
 import { css, cx } from '~/emotion'
 import { MicroElement } from '~/micro-element'
+import { black } from '~/palette'
+import { rgb } from '~/utils'
 
 export class Backdrop extends MicroElement {
     el = document.createElement('div')
@@ -71,7 +73,7 @@ export namespace Backdrop {
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.4);
+            background-color: ${rgb(black, 40)};
             opacity: 0;
             transition: opacity 0.5s;
             display: none;

@@ -41,3 +41,28 @@ export const debounce = <Callback extends (...args: any[]) => void>(
         }, duration)
     }
 }
+
+/**
+ *
+ * @param hex #000, #000000
+ * @param alpha 100, 0 ~ 100
+ * @returns rgb(0 0 0 / 100%)
+ */
+export const rgb = (hex: `#${string}`, alpha = 100) => {
+    const code = hex.slice(1)
+
+    const isCompressed = code.length === 3
+
+    const arr: number[] = []
+
+    for (let i = 0; i < 3; i++) {
+        const start = i * (isCompressed ? 1 : 2)
+        const end = start + (isCompressed ? 1 : 2)
+        const repeat = isCompressed ? 2 : 1
+        const value = code.slice(start, end).repeat(repeat)
+
+        arr.push(parseInt(value, 16))
+    }
+
+    return `rgb(${arr.join(' ')} / ${Math.min(alpha, 100)}%)`
+}
