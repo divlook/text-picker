@@ -296,33 +296,37 @@ export class GuideBox extends MicroElement {
         this.render()
     }
 
-    isAcceptablePoint(x: number, y: number) {
+    getPointPosition(x: number, y: number) {
+        if (!this.isDone) {
+            return 'none'
+        }
+
         /**
          * 허용 범위(단위 px)
          */
         const allowableRange = 20
 
-        if (!this.isDone) {
-            return false
+        let left = this.outline.x
+        let right = left + this.outline.width
+        let top = this.outline.y
+        let bottom = top + this.outline.height
+
+        const isInside = () => left < x && top < y && right > x && bottom > y
+
+        if (isInside()) {
+            return 'inside'
         }
 
-        if (this.outline.x - allowableRange > x) {
-            return false
+        left -= allowableRange
+        right += allowableRange
+        top -= allowableRange
+        bottom += allowableRange
+
+        if (isInside()) {
+            return 'border'
         }
 
-        if (this.outline.y - allowableRange > y) {
-            return false
-        }
-
-        if (this.outline.x + this.outline.width + allowableRange < x) {
-            return false
-        }
-
-        if (this.outline.y + this.outline.height + allowableRange < y) {
-            return false
-        }
-
-        return true
+        return 'outside'
     }
 
     clear() {

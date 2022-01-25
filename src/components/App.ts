@@ -79,14 +79,21 @@ export class App extends MicroElement {
         const y = ev.clientY + window.scrollY
 
         if (this.guideBox.isDone) {
-            if (this.guideBox.isAcceptablePoint(x, y)) {
-                ev.preventDefault()
-                ev.stopPropagation()
-                return
+            const pointPosition = this.guideBox.getPointPosition(x, y)
+
+            switch (pointPosition) {
+                case 'outside':
+                case 'none': {
+                    this.clear()
+                    break
+                }
+
+                case 'border': {
+                    ev.preventDefault()
+                    ev.stopPropagation()
+                    break
+                }
             }
-
-            this.clear()
-
             return
         }
 
