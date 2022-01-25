@@ -4,20 +4,6 @@ import { MicroElement } from '~/micro-element'
 import { Toolbar } from '~/components/Toolbar'
 
 export class GuideBox extends MicroElement {
-    static hasElement(target?: HTMLElement | EventTarget | null) {
-        const el = target as HTMLElement
-
-        if (!el) {
-            return false
-        }
-
-        if (!!el.closest(`.${GuideBox.styles.container}`)) {
-            return true
-        }
-
-        return el.classList.contains(GuideBox.styles.container)
-    }
-
     toolbar = new Toolbar()
 
     coordinates: Coordinate[] = []
@@ -308,6 +294,35 @@ export class GuideBox extends MicroElement {
     setZIndex(zIndex: number) {
         this.zIndex = zIndex
         this.render()
+    }
+
+    isAcceptablePoint(x: number, y: number) {
+        /**
+         * 허용 범위(단위 px)
+         */
+        const allowableRange = 20
+
+        if (!this.isDone) {
+            return false
+        }
+
+        if (this.outline.x - allowableRange > x) {
+            return false
+        }
+
+        if (this.outline.y - allowableRange > y) {
+            return false
+        }
+
+        if (this.outline.x + this.outline.width + allowableRange < x) {
+            return false
+        }
+
+        if (this.outline.y + this.outline.height + allowableRange < y) {
+            return false
+        }
+
+        return true
     }
 
     clear() {

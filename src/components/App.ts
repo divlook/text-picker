@@ -73,8 +73,13 @@ export class App extends MicroElement {
     }
 
     private onClick = (ev: MouseEvent) => {
+        const x = ev.clientX + window.scrollX
+        const y = ev.clientY + window.scrollY
+
         if (this.guideBox.isDone) {
-            if (GuideBox.hasElement(ev.target)) {
+            if (this.guideBox.isAcceptablePoint(x, y)) {
+                ev.preventDefault()
+                ev.stopPropagation()
                 return
             }
 
@@ -84,9 +89,6 @@ export class App extends MicroElement {
         }
 
         if (this.isActive) {
-            const x = ev.clientX + window.scrollX
-            const y = ev.clientY + window.scrollY
-
             this.setPoint(x, y)
         }
     }
