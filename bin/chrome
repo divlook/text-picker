@@ -11,9 +11,9 @@ const buildDir = rootDir(`release/text-picker@${version}`)
 
 clearBuildDir()
 
-build('background')
+build('chrome.background')
 
-build('content')
+build('chrome.content')
 
 createManifest()
 
@@ -32,10 +32,7 @@ function clearBuildDir() {
 
 function build(mode) {
     const pnpm = '$(pnpm bin)'
-    const cmd = [
-        `${pnpm}/tsc && ${pnpm}/vite build -c vite.chrome.config.ts`,
-        `--mode ${mode}`,
-    ].join(' ')
+    const cmd = `${pnpm}/tsc && ${pnpm}/vite build --mode "${mode}"`
 
     return execSync(cmd)
 }
