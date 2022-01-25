@@ -10,10 +10,6 @@ const activeStyle = css`
 `
 
 export class BlockParser {
-    static isInlineElement(el: HTMLElement) {
-        return window.getComputedStyle(el)?.display?.includes?.('inline')
-    }
-
     static getContent(el: HTMLElement) {
         const cloneEl = el.cloneNode(true) as HTMLElement
 
@@ -30,7 +26,7 @@ export class BlockParser {
         return (cloneEl.textContent || '')
             .split('\n')
             .reduce((resultText, row) => {
-                const rowText = row.trim()
+                const rowText = row.trim().replaceAll(/\s+/g, ' ')
 
                 if (!resultText) {
                     return rowText
@@ -82,10 +78,6 @@ export class BlockParser {
     constructor(root: HTMLElement) {
         this.rootElement = root
 
-        if (BlockParser.isInlineElement(root)) {
-            return
-        }
-
         this.parse(root)
     }
 
@@ -113,10 +105,6 @@ export class BlockParser {
         this.parseOffset(block)
 
         for (const child of Array.from(el.children) as HTMLElement[]) {
-            if (BlockParser.isInlineElement(child)) {
-                continue
-            }
-
             const childBlock = this.parse(child)
 
             childBlock.parentId = block.id
