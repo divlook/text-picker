@@ -127,30 +127,14 @@ export class BlockParser {
     }
 
     private parseOffset(block: BlockNode) {
+        const { top, bottom, left, right } = block.el.getBoundingClientRect()
+
         const offset: Offset = {
-            top: 0,
-            bottom: 0,
-            left: 0,
-            right: 0,
+            top,
+            bottom,
+            left,
+            right,
         }
-
-        const offsetParentElement = block.el.offsetParent as HTMLElement | null
-
-        if (offsetParentElement) {
-            const parentBlock = this.parse(offsetParentElement)
-
-            if (parentBlock) {
-                offset.top += offsetParentElement.offsetTop
-                offset.left += offsetParentElement.offsetLeft
-            }
-        }
-
-        const currentEl = block.el as HTMLElement
-
-        offset.top += currentEl.offsetTop
-        offset.bottom += offset.top + currentEl.clientHeight
-        offset.left += currentEl.offsetLeft
-        offset.right += offset.left + currentEl.clientWidth
 
         this.offsetMap.set(block.id, offset)
     }
