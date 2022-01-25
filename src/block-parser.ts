@@ -127,6 +127,12 @@ export class BlockParser {
         this.offsetMap.set(block.id, offset)
     }
 
+    reparseOffsetAllBlock() {
+        this.blockMap.forEach((block) => {
+            this.parseOffset(block)
+        })
+    }
+
     claer() {
         this.unselect()
         this.blockMap.clear()

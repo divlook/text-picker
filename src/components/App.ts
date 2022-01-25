@@ -5,6 +5,7 @@ import { BlockParser } from '~/block-parser'
 import { MicroElement } from '~/micro-element'
 import { GuideBox } from '~/components/GuideBox'
 import { Backdrop } from '~/components/Backdrop'
+import { throttle } from '~/utils'
 
 export class App extends MicroElement {
     backdrop = new Backdrop()
@@ -21,6 +22,7 @@ export class App extends MicroElement {
         this.el.appendChild(this.guideBox.el)
 
         window.addEventListener('click', this.onClick, true)
+        window.addEventListener('resize', this.onResize)
 
         this.guideBox.on('move', () => {
             this.blocks?.select(this.guideBox.outline)
@@ -92,6 +94,10 @@ export class App extends MicroElement {
             this.setPoint(x, y)
         }
     }
+
+    private onResize = throttle(1000, () => {
+        this.blocks?.reparseOffsetAllBlock()
+    })
 
     start() {
         const zIndex = BlockParser.getZIndex(document.body)
