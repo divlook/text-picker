@@ -106,7 +106,9 @@ export class App extends MicroElement {
         this.guideBox.setZIndex(zIndex)
 
         this.blocks?.claer()
-        this.blocks = new BlockParser(document.body)
+        this.blocks = new BlockParser(document.body, {
+            ignoreElements: [this.el],
+        })
 
         MicroElement.nextTick(() => {
             this.isActive = true

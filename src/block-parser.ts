@@ -1,5 +1,5 @@
 import { css } from '~/emotion'
-import { BlockNode, Offset, Outline } from '~/interfaces'
+import { Offset, Outline } from '~/interfaces'
 
 const activeStyle = css`
     background-color: rgb(0 164 255 / 20%) !important;
@@ -65,9 +65,9 @@ export class BlockParser {
 
     rootElement
 
-    blockMap = new Map<Symbol, BlockNode>()
+    blockMap = new Map<Symbol, BlockParser.BlockNode>()
 
-    blockMapByElement = new Map<HTMLElement, BlockNode>()
+    blockMapByElement = new Map<HTMLElement, BlockParser.BlockNode>()
 
     offsetMap = new Map<Symbol, Offset>()
 
@@ -75,10 +75,18 @@ export class BlockParser {
 
     selectedContents: string[] = []
 
-    constructor(root: HTMLElement) {
-        this.rootElement = root
+    ignoreElementSet = new Set<HTMLElement>()
 
-        this.parse(root)
+    constructor(rootElement: HTMLElement, options: BlockParser.Options = {}) {
+        this.rootElement = rootElement
+
+        this.ignoreElementSet.clear()
+
+        if (options.ignoreElements) {
+            this.ignoreElementSet = new Set(options.ignoreElements)
+        }
+
+        this.parse(rootElement)
     }
 
     private parse(el: HTMLElement) {
@@ -90,9 +98,9 @@ export class BlockParser {
 
         const id = Symbol()
 
-        const childs: Map<Symbol, BlockNode> = new Map()
+        const childs: Map<Symbol, BlockParser.BlockNode> = new Map()
 
-        const block: BlockNode = {
+        const block: BlockParser.BlockNode = {
             id,
             el,
             childs,
@@ -114,7 +122,7 @@ export class BlockParser {
         return block
     }
 
-    private parseOffset(block: BlockNode) {
+    private parseOffset(block: BlockParser.BlockNode) {
         const { top, bottom, left, right } = block.el.getBoundingClientRect()
 
         const offset: Offset = {
@@ -165,10 +173,17 @@ export class BlockParser {
         let arr = Array.from(root?.childs.values() || [])
 
         while (arr.length) {
-            const nextArr: BlockNode[] = []
+            const nextArr: BlockParser.BlockNode[] = []
 
             for (const block of arr) {
                 const { parentId } = block
+
+                if (this.isIgnoreElement(block.el)) {
+                    this.blockMap.delete(block.id)
+                    this.blockMapByElement.delete(block.el)
+                    this.offsetMap.delete(block.id)
+                    continue
+                }
 
                 if (parentId && this.selectedBlockIdSet.has(parentId)) {
                     continue
@@ -206,5 +221,22 @@ export class BlockParser {
 
     toString() {
         return this.selectedContents.join('\n\n')
+    }
+
+    isIgnoreElement(el: HTMLElement) {
+        return this.ignoreElementSet.has(el)
+    }
+}
+
+export namespace BlockParser {
+    export interface Options {
+        ignoreElements?: HTMLElement[]
+    }
+
+    export interface BlockNode {
+        id: Symbol
+        parentId?: Symbol
+        el: HTMLElement
+        childs: Map<Symbol, BlockNode>
     }
 }

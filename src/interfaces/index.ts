@@ -12,13 +12,6 @@ export interface Offset {
     bottom: number
 }
 
-export interface BlockNode {
-    id: Symbol
-    parentId?: Symbol
-    el: HTMLElement
-    childs: Map<Symbol, BlockNode>
-}
-
 export interface Outline {
     x: number
     y: number
