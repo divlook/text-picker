@@ -47,13 +47,11 @@ export abstract class MicroElement {
         this.emit('created')
 
         MicroElement.nextTick(() => {
+            this.mounted()
+
             this.render()
 
-            MicroElement.nextTick(() => {
-                this.mounted()
-
-                this.emit('mounted')
-            })
+            this.emit('mounted')
         })
     }
 
