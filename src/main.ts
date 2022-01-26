@@ -1,10 +1,5 @@
-import '~/main.css'
-import { App } from '~/components/App'
+import { Example } from '~/components/Example'
 
-const app = new App()
+const example = new Example()
 
-document.body.appendChild(app.el)
-
-document.querySelector('#btn')?.addEventListener('click', () => {
-    app.start()
-})
+document.body.appendChild(example.el)
