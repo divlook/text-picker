@@ -6,14 +6,17 @@ import { rgb } from '~/utils'
 export class BlockParser {
     static getContent(el: HTMLElement) {
         const cloneEl = el.cloneNode(true) as HTMLElement
+        const imageElements: HTMLImageElement[] = []
 
-        Array.from(cloneEl.querySelectorAll('img')).forEach((img) => {
-            const span = document.createElement('span')
+        if (cloneEl.tagName.toUpperCase() === 'IMG') {
+            imageElements.push(cloneEl as HTMLImageElement)
+        }
 
+        imageElements.push(...Array.from(cloneEl.querySelectorAll('img')))
+
+        imageElements.forEach((img) => {
             if (img.alt) {
-                span.textContent = `image(${img.alt})`
-
-                img.parentElement?.replaceChild(span, img)
+                img.textContent = `image(${img.alt})`
             }
         })
 
