@@ -187,14 +187,15 @@ export class BlockParser {
 
                 if (offset) {
                     const { left, right, top, bottom } = offset
-                    let hitCount = 0
+                    let xHitCount = 0
+                    let yHitCount = 0
 
-                    if (left >= startX) hitCount++
-                    if (right <= endX) hitCount++
-                    if (top >= startY) hitCount++
-                    if (bottom <= endY) hitCount++
+                    if (startX <= left && left <= endX) xHitCount++
+                    if (startX <= right && right <= endX) xHitCount++
+                    if (startY <= top && top <= endY) yHitCount++
+                    if (startY <= bottom && bottom <= endY) yHitCount++
 
-                    if (hitCount > 3) {
+                    if (xHitCount + yHitCount >= 3) {
                         const content = BlockParser.getContent(block.el)
 
                         if (content) {
