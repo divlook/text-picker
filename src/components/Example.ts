@@ -13,6 +13,14 @@ export class Example extends MicroElement {
         this.el.innerHTML = `
             <h1><span>Text Picker</span></h1>
 
+            <h2><span>이미지</span></h2>
+
+            <p>
+                <img src="/icon@16.png" alt="Text Picker" style="display: inline-block;">
+                <img src="/icon@48.png" alt="Text Picker" style="display: inline-block;">
+                <img src="/icon@128.png" alt="Text Picker" style="display: inline-block;">
+            </p>
+
             <h2><span>훈민정음</span></h2>
 
             <p>
@@ -49,6 +57,14 @@ export class Example extends MicroElement {
             <p><span>어긔야 어강됴리</span></p>
 
             <p><span>아으 다롱디리</span></p>
+
+            <h2>하여가</h2>
+
+            <p>이렇게 하면 어떻고, 저렇게 하면 어떻하리요</p>
+
+            <p>만수산 드렁 칡이 얽혀진들 어떻하리요</p>
+
+            <p>우리도 이같이 얽혀서 백년까지 누리리라</p>
 
             <button class="${Example.styles.button}">Pick</button>
         `
