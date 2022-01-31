@@ -3,7 +3,7 @@
 const path = require('path')
 const fs = require('fs')
 const { execSync } = require('child_process')
-const { version } = require('../package.json')
+const { description, version } = require('../package.json')
 
 const rootDir = (...paths) => path.resolve(__dirname, '../', ...paths)
 
@@ -40,7 +40,7 @@ function build(mode) {
 function createManifest() {
     const json = {
         name: 'Text Picker',
-        description: '웹 페이지에서 텍스트를 추출하는 앱',
+        description,
         version,
         manifest_version: 3,
         icons: {
