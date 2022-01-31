@@ -1,6 +1,10 @@
 {
   "name": "text-picker",
   "version": "0.0.2",
+  "description": "웹 페이지에서 텍스트를 추출하는 크롬 확장 앱입니다.",
+  "keywords": [
+    "chrome-extension"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
