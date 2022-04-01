@@ -1,6 +1,6 @@
 {
   "name": "text-picker",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "웹 페이지에서 텍스트를 추출하는 앱",
   "keywords": [
     "chrome-extension"
