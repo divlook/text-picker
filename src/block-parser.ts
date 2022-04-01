@@ -125,10 +125,10 @@ export class BlockParser {
         const { top, bottom, left, right } = block.el.getBoundingClientRect()
 
         const offset: Offset = {
-            top,
-            bottom,
-            left,
-            right,
+            top: top + window.scrollY,
+            bottom: bottom + window.scrollY,
+            left: left + window.scrollX,
+            right: right + window.scrollX,
         }
 
         this.offsetMap.set(block.id, offset)
