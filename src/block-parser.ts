@@ -84,6 +84,7 @@ export class BlockParser {
         }
 
         this.parse(rootElement)
+        this.parseTree()
     }
 
     private parse(el: HTMLElement) {
@@ -91,6 +92,10 @@ export class BlockParser {
 
         if (cachedBlock) {
             return cachedBlock
+        }
+
+        if (window.getComputedStyle(el).display === 'none') {
+            return
         }
 
         const id = Symbol()
@@ -110,10 +115,7 @@ export class BlockParser {
         this.parseOffset(block)
 
         for (const child of Array.from(el.children) as HTMLElement[]) {
-            const childBlock = this.parse(child)
-
-            childBlock.parentId = block.id
-            block.childs.set(childBlock.id, childBlock)
+            this.parse(child)
         }
 
         return block
@@ -132,10 +134,54 @@ export class BlockParser {
         this.offsetMap.set(block.id, offset)
     }
 
+    private parseTree() {
+        const all = Array.from(this.offsetMap)
+        const getSize = (offset: Offset) => {
+            return (offset.right - offset.left) * (offset.bottom - offset.top)
+        }
+        const isInside = (a: Offset, b: Offset) => {
+            if (a.bottom > b.bottom) return false
+            if (a.top < b.top) return false
+            if (a.left < b.left) return false
+            if (a.right > b.right) return false
+            return true
+        }
+        const getBlock = (id: Symbol) => {
+            return this.blockMap.get(id)
+        }
+
+        all.sort(([, a], [, b]) => getSize(a) - getSize(b))
+
+        for (let i = 0; i < all.length - 1; i++) {
+            const [id, offset] = all[i]
+
+            for (let j = i + 1; j < all.length; j++) {
+                const [nextId, nextOffset] = all[j]
+
+                if (isInside(offset, nextOffset)) {
+                    const block = getBlock(id)
+                    const parentBlock = getBlock(nextId)
+
+                    // block이 없으면 정지
+                    if (!block) break
+
+                    // parentBlock이 없으면 넘김
+                    if (!parentBlock) continue
+
+                    parentBlock.childs.set(id, block)
+                    block.parentId = nextId
+
+                    break
+                }
+            }
+        }
+    }
+
     reparseOffsetAllBlock() {
         this.blockMap.forEach((block) => {
             this.parseOffset(block)
         })
+        this.parseTree()
     }
 
     claer() {
