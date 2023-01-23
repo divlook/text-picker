@@ -32,7 +32,7 @@ function clearBuildDir() {
 
 function build(mode) {
     const pnpm = '$(pnpm bin)'
-    const cmd = `${pnpm}/tsc && ${pnpm}/vite build --mode "${mode}"`
+    const cmd = `${pnpm}/vite build --mode "${mode}"`
 
     return execSync(cmd)
 }
