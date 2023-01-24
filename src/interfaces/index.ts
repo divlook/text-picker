@@ -22,7 +22,7 @@ export interface Outline {
 export interface MicroElementEmitMethod {
     (eventName: 'created'): void
     (eventName: 'mounted'): void
-    (eventName: string): void
+    (eventName: string, ...args: any[]): void
 }
 
 export interface MicroElementOnMethod {

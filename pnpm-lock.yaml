@@ -6,6 +6,7 @@ specifiers:
   '@types/chrome': ^0.0.209
   '@types/node': ^18.11.18
   clipboardy: ^3.0.0
+  tesseract.js: ^4.0.2
   typescript: ^4.9.4
   vite: ^4.0.4
 
@@ -15,6 +16,7 @@ devDependencies:
   '@types/chrome': 0.0.209
   '@types/node': 18.11.18
   clipboardy: 3.0.0
+  tesseract.js: 4.0.2
   typescript: 4.9.4
   vite: 4.0.4_@types+node@18.11.18
 
@@ -607,6 +609,23 @@ packages:
     resolution: {integrity: sha512-Of/R0wqp83cgHozfIYLbBMnej79U/SVGOOyuB3VVFv1NRM/PSFMK12x9KVtiYzJqmnU5WR2qp0Z5rHb7sWGnFQ==}
     dev: true
 
+  /babel-eslint/10.1.0:
+    resolution: {integrity: sha512-ifWaTHQ0ce+448CYop8AdrQiBsGrnC+bMgfyKFdi6EsPLTAWG+QfyDeM6OH+FmWnKvEq5NnBMLvlBUPKQZoDSg==}
+    engines: {node: '>=6'}
+    deprecated: babel-eslint is now @babel/eslint-parser. This package will no longer receive updates.
+    peerDependencies:
+      eslint: '>= 4.12.1'
+    dependencies:
+      '@babel/code-frame': 7.18.6
+      '@babel/parser': 7.20.13
+      '@babel/traverse': 7.20.13
+      '@babel/types': 7.20.7
+      eslint-visitor-keys: 1.3.0
+      resolve: 1.22.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /babel-plugin-macros/3.1.0:
     resolution: {integrity: sha512-Cg7TFGpIr01vOQNODXOOaGz2NpCU5gl8x1qJFbb6hbZxR7XrcE2vtbAsTAbJ7/xwJtUuJEw8K8Zr/AE0LHlesg==}
     engines: {node: '>=10', npm: '>=6'}
@@ -614,6 +633,10 @@ packages:
       '@babel/runtime': 7.20.13
       cosmiconfig: 7.1.0
       resolve: 1.22.1
+    dev: true
+
+  /bmp-js/0.1.0:
+    resolution: {integrity: sha512-vHdS19CnY3hwiNdkaqk93DvjVLfbEcI8mys4UjuWrlX1haDmroo8o4xCzh4wD6DGV6HxRCyauwhHRqMTfERtjw==}
     dev: true
 
   /browserslist/4.21.4:
@@ -761,6 +784,11 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
+  /eslint-visitor-keys/1.3.0:
+    resolution: {integrity: sha512-6J72N8UNa462wa/KFODt/PJ3IU60SDpC3QXC1Hjc1BXXpfL2C9R5+AU7jhe0F6GREqVMh4Juu+NY7xn+6dipUQ==}
+    engines: {node: '>=4'}
+    dev: true
+
   /execa/5.1.1:
     resolution: {integrity: sha512-8uSpZZocAZRBAPIEINJj3Lo9HyGitllczc27Eh5YYojjMFMn8yHMDMaUHE2Jqfq05D/wucwI4JGURyXt1vchyg==}
     engines: {node: '>=10'}
@@ -774,6 +802,11 @@ packages:
       onetime: 5.1.2
       signal-exit: 3.0.6
       strip-final-newline: 2.0.0
+    dev: true
+
+  /file-type/12.4.2:
+    resolution: {integrity: sha512-UssQP5ZgIOKelfsaB5CuGAL+Y+q7EmONuiwF3N5HAH0t27rvrttgi6Ra9k/+DVaY9UF6+ybxu5pOXLUdA8N7Vg==}
+    engines: {node: '>=8'}
     dev: true
 
   /find-root/1.1.0:
@@ -824,6 +857,10 @@ packages:
     engines: {node: '>=10.17.0'}
     dev: true
 
+  /idb-keyval/3.2.0:
+    resolution: {integrity: sha512-slx8Q6oywCCSfKgPgL0sEsXtPVnSbTLWpyiDcu6msHOyKOLari1TD1qocXVCft80umnkk3/Qqh3lwoFt8T/BPQ==}
+    dev: true
+
   /import-fresh/3.3.0:
     resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}
     engines: {node: '>=6'}
@@ -848,9 +885,17 @@ packages:
     hasBin: true
     dev: true
 
+  /is-electron/2.2.1:
+    resolution: {integrity: sha512-r8EEQQsqT+Gn0aXFx7lTFygYQhILLCB+wn0WCDL5LZRINeLH/Rvw1j2oKodELLXYNImQ3CRlVsY8wW4cGOsyuw==}
+    dev: true
+
   /is-stream/2.0.1:
     resolution: {integrity: sha512-hFoiJiTl63nn+kstHGBtewWSKnQLpyb155KHheA1l39uvtO9nWIop1p3udqPcUd/xbF1VLMO4n7OI6p7RbngDg==}
     engines: {node: '>=8'}
+    dev: true
+
+  /is-url/1.2.4:
+    resolution: {integrity: sha512-ITvGim8FhRiYe4IQ5uHSkj7pVaPDrCTkNd3yq3cV7iZAcJdHTUMPMEHcqSOy9xZ9qFenQCvi+2wjH9a1nXqHww==}
     dev: true
 
   /is-wsl/2.2.0:
@@ -913,6 +958,18 @@ packages:
     hasBin: true
     dev: true
 
+  /node-fetch/2.6.8:
+    resolution: {integrity: sha512-RZ6dBYuj8dRSfxpUSu+NsdF1dpPpluJxwOp+6IoDp/sH2QNDSvurYsAa+F1WxY2RjA1iP93xhcsUoYbF2XBqVg==}
+    engines: {node: 4.x || >=6.0.0}
+    peerDependencies:
+      encoding: ^0.1.0
+    peerDependenciesMeta:
+      encoding:
+        optional: true
+    dependencies:
+      whatwg-url: 5.0.0
+    dev: true
+
   /node-releases/2.0.8:
     resolution: {integrity: sha512-dFSmB8fFHEH/s81Xi+Y/15DQY6VHW81nXRj86EMSL3lmuTmK1e+aT4wrFCkTbm+gSwkw4KpX+rT/pMM2c1mF+A==}
     dev: true
@@ -929,6 +986,11 @@ packages:
     engines: {node: '>=6'}
     dependencies:
       mimic-fn: 2.1.0
+    dev: true
+
+  /opencollective-postinstall/2.0.3:
+    resolution: {integrity: sha512-8AV/sCtuzUeTo8gQK5qDZzARrulB3egtLzFgteqB2tcT4Mw7B8Kt7JcDHmltjz6FOAHsvTevk70gZEbhM4ZS9Q==}
+    hasBin: true
     dev: true
 
   /parent-module/1.0.1:
@@ -982,6 +1044,11 @@ packages:
   /resolve-from/4.0.0:
     resolution: {integrity: sha512-pb/MYmXstAkysRFx8piNI1tGFNQIFA3vkE3Gq4EuA1dF6gHp/+vgZqsCGJapvy8N3Q+4o7FwvquPJcnZ7RYy4g==}
     engines: {node: '>=4'}
+    dev: true
+
+  /resolve-url/0.2.1:
+    resolution: {integrity: sha512-ZuF55hVUQaaczgOIwqWzkEcEidmlD/xl44x1UZnhOXcYuFN2S6+rcxpG+C1N3So0wvNI3DmJICUFfu2SxhBmvg==}
+    deprecated: https://github.com/lydell/resolve-url#deprecated
     dev: true
 
   /resolve/1.22.1:
@@ -1057,9 +1124,40 @@ packages:
     engines: {node: '>= 0.4'}
     dev: true
 
+  /tesseract.js-core/4.0.2:
+    resolution: {integrity: sha512-ZVyYPN+ZAos31ZErqzcFme6XaOA8xrZxisNyk3nTicHVPSqtQH7UgZ36XoZZY0Exeugr5A+Uxv5ll9aMd1c0jg==}
+    dev: true
+
+  /tesseract.js/4.0.2:
+    resolution: {integrity: sha512-OKc6N68czBa8QnoBwx+kAUG4OyqskXa1O7wSrOXOEYZ0TQcGa3daRVIsRhtVAmNMTrvZnOsg49kfNrw0BZaFEA==}
+    requiresBuild: true
+    dependencies:
+      babel-eslint: 10.1.0
+      bmp-js: 0.1.0
+      file-type: 12.4.2
+      idb-keyval: 3.2.0
+      is-electron: 2.2.1
+      is-url: 1.2.4
+      node-fetch: 2.6.8
+      opencollective-postinstall: 2.0.3
+      regenerator-runtime: 0.13.11
+      resolve-url: 0.2.1
+      tesseract.js-core: 4.0.2
+      wasm-feature-detect: 1.4.0
+      zlibjs: 0.3.1
+    transitivePeerDependencies:
+      - encoding
+      - eslint
+      - supports-color
+    dev: true
+
   /to-fast-properties/2.0.0:
     resolution: {integrity: sha512-/OaKK0xYrs3DmxRYqL/yDc+FxFUVYhDlXMhRmv3z915w2HF1tnN1omB354j8VUGO/hbRzyD6Y3sA7v7GS/ceog==}
     engines: {node: '>=4'}
+    dev: true
+
+  /tr46/0.0.3:
+    resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
     dev: true
 
   /typescript/4.9.4:
@@ -1113,6 +1211,21 @@ packages:
       fsevents: 2.3.2
     dev: true
 
+  /wasm-feature-detect/1.4.0:
+    resolution: {integrity: sha512-9z4Yk3SeHQdb7E4g6ywQYcUt1CHr9HFiCIA5h29rv0gmW4lCE5dnDhheiJI5qzVPSDnXHyXQPLGPyucsuIzacw==}
+    dev: true
+
+  /webidl-conversions/3.0.1:
+    resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
+    dev: true
+
+  /whatwg-url/5.0.0:
+    resolution: {integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==}
+    dependencies:
+      tr46: 0.0.3
+      webidl-conversions: 3.0.1
+    dev: true
+
   /which/2.0.2:
     resolution: {integrity: sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==}
     engines: {node: '>= 8'}
@@ -1128,4 +1241,8 @@ packages:
   /yaml/1.10.2:
     resolution: {integrity: sha512-r3vXyErRCYJ7wg28yvBY5VSoAF8ZvlcW9/BwUzEtUsjvX/DKs24dIkuwjtuprwJJHsbyUbLApepYTR1BN4uHrg==}
     engines: {node: '>= 6'}
+    dev: true
+
+  /zlibjs/0.3.1:
+    resolution: {integrity: sha512-+J9RrgTKOmlxFSDHo0pI1xM6BLVUv+o0ZT9ANtCxGkjIVCCUdx9alUF8Gm+dGLKbkkkidWIHFDZHDMpfITt4+w==}
     dev: true

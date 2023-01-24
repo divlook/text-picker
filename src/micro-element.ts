@@ -41,7 +41,7 @@ export abstract class MicroElement {
 
     el: HTMLElement = document.createElement('div')
 
-    private eventMap = new Map<string, Set<() => void>>()
+    private eventMap = new Map<string, Set<(...args: any[]) => void>>()
 
     constructor() {
         this.emit('created')
@@ -56,13 +56,13 @@ export abstract class MicroElement {
     }
 
     get emit(): MicroElementEmitMethod {
-        return (eventName) => {
+        return (eventName, ...args) => {
             const callbackSet = this.getCallbackSet(eventName)
             const callbacks = Array.from(callbackSet)
 
             for (const cb of callbacks) {
                 try {
-                    cb()
+                    cb(...args)
                 } catch (error) {
                     console.error(error)
                     break

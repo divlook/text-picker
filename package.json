@@ -14,6 +14,7 @@
     "@types/chrome": "^0.0.209",
     "@types/node": "^18.11.18",
     "clipboardy": "^3.0.0",
+    "tesseract.js": "^4.0.2",
     "typescript": "^4.9.4",
     "vite": "^4.0.4"
   }

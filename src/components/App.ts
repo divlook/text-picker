@@ -1,11 +1,14 @@
 import clipboardy from 'clipboardy'
+import Tesseract from 'tesseract.js'
 import { css } from '~/emotion'
 import { Coordinate } from '~/interfaces'
-import { BlockParser } from '~/block-parser'
+// import { BlockParser } from '~/block-parser'
 import { MicroElement } from '~/micro-element'
 import { GuideBox } from '~/components/GuideBox'
 import { Backdrop } from '~/components/Backdrop'
-import { throttle } from '~/utils'
+import { getZIndex, throttle } from '~/utils'
+import { CHROME_ACTION_NAME } from '~/chrome/constants'
+import { makeChromeMessage } from '~/chrome/events'
 
 export class App extends MicroElement {
     backdrop = new Backdrop()
@@ -15,7 +18,8 @@ export class App extends MicroElement {
 
     coordinates: Coordinate[] = []
 
-    blocks?: BlockParser
+    // XXX: 삭제
+    // blocks?: BlockParser
 
     mounted() {
         this.el.appendChild(this.backdrop.el)
@@ -25,30 +29,43 @@ export class App extends MicroElement {
         window.addEventListener('resize', this.onResize)
 
         this.guideBox.on('move', () => {
-            this.blocks?.select(this.guideBox.outline)
+            // TODO: 움직일 때마다 파싱되게 해야될 듯, 디바운싱으로 구현
+            // this.blocks?.select(this.guideBox.outline)
         })
 
         this.guideBox.on('copy', async () => {
-            const text = this.blocks?.toString()
+            const dataUri = await this.capture()
 
-            if (text) {
+            if (dataUri) {
+                const { data } = await Tesseract.recognize(dataUri)
+                console.log(data.text)
+                console.log(data.words)
+
                 try {
-                    await clipboardy.write(text)
+                    await clipboardy.write(data.text)
                     this.guideBox.toolbar.setActionState('copy', true)
                     return
                 } catch {
                     //
                 }
+
+                // window.open()?.document.write(`
+                //     <img src="${dataUri}" />
+                // `)
             }
 
             this.guideBox.toolbar.setActionState('copy', false)
         })
 
-        this.guideBox.on('translate', () => {
-            const text = this.blocks?.toString()
+        this.guideBox.on('translate', async () => {
+            const dataUri = await this.capture()
 
-            if (text) {
-                const encodedText = encodeURIComponent(text)
+            if (dataUri) {
+                const { data } = await Tesseract.recognize(dataUri)
+                console.log(data.text)
+                console.log(data.words)
+
+                const encodedText = encodeURIComponent(data.text)
                 const url = `https://translate.google.com/?sl=auto&text=${encodedText}`
 
                 this.guideBox.toolbar.setActionState('translate', true)
@@ -103,19 +120,23 @@ export class App extends MicroElement {
     }
 
     private onResize = throttle(1000, () => {
-        this.blocks?.reparseOffsetAllBlock()
+        // TODO: 창 리사이즈될 때도 계산할지 고민 중
+        // this.blocks?.reparseOffsetAllBlock()
     })
 
     start() {
-        const zIndex = BlockParser.getZIndex(document.body)
+        const zIndex = getZIndex(document.body)
 
         this.backdrop.setZIndex(zIndex)
         this.guideBox.setZIndex(zIndex)
 
-        this.blocks?.claer()
-        this.blocks = new BlockParser(document.body, {
-            ignoreElements: [this.el],
-        })
+        // XXX: 삭제
+        // this.blocks?.claer()
+        // this.blocks = new BlockParser(document.body, {
+        //     ignoreElements: [this.el],
+        // })
+
+        this.enableBodyScrollbar(true)
 
         MicroElement.nextTick(() => {
             this.isActive = true
@@ -150,8 +171,72 @@ export class App extends MicroElement {
     clear() {
         this.guideBox.clear()
         this.coordinates = []
-        this.blocks?.claer()
+
+        // XXX: 삭제
+        // this.blocks?.claer()
         this.render()
+
+        this.enableBodyScrollbar(false)
+    }
+
+    capture() {
+        return new Promise<Blob | string | void>((resolve) => {
+            this.guideBox.toolbar.setActive(false)
+
+            chrome.runtime.sendMessage(
+                makeChromeMessage(CHROME_ACTION_NAME.CAPTURE)()
+            )
+
+            this.on('capture', (dataUri?: string) => {
+                this.guideBox.toolbar.setActive(true)
+                this.off('capture')
+
+                if (!dataUri) {
+                    resolve()
+                    return
+                }
+
+                const img = new Image()
+                img.src = dataUri
+                img.onload = () => {
+                    const canvas = document.createElement('canvas')
+                    const { outline } = this.guideBox
+                    const ratio = window.devicePixelRatio
+
+                    canvas.width = outline.width
+                    canvas.height = outline.height
+
+                    const ctx = canvas.getContext('2d')
+
+                    if (ctx) {
+                        const left = outline.x
+                        const top = outline.y - window.scrollY
+
+                        ctx.drawImage(
+                            img,
+                            left * ratio,
+                            top * ratio,
+                            outline.width * ratio,
+                            outline.height * ratio,
+                            0,
+                            0,
+                            outline.width,
+                            outline.height
+                        )
+
+                        resolve(canvas.toDataURL())
+                    }
+                }
+            })
+        })
+    }
+
+    enableBodyScrollbar(isEnabled: boolean) {
+        document.body.classList.remove(App.styles.body.hiddenScrollbar)
+
+        if (isEnabled) {
+            document.body.classList.add(App.styles.body.hiddenScrollbar)
+        }
     }
 }
 
@@ -161,5 +246,10 @@ export namespace App {
         crosshair: css`
             cursor: crosshair;
         `,
+        body: {
+            hiddenScrollbar: css`
+                overflow: hidden !important;
+            `,
+        },
     }
 }

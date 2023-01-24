@@ -1,4 +1,5 @@
-import { MESSAGE_TYPE } from '~/chrome/constants'
+import { CHROME_ACTION_NAME } from '~/chrome/constants'
+import { parseChromeMessage } from '~/chrome/events'
 import { App } from '~/components/App'
 
 const app = new App()
@@ -8,20 +9,24 @@ window.addEventListener('load', setup)
 function setup() {
     document.body.appendChild(app.el)
 
-    chrome.runtime.onMessage.addListener((request) => {
-        const type = request?.type
-        const action = request?.action
+    chrome.runtime.onMessage.addListener((message) => {
+        const data = parseChromeMessage(message)
 
-        if (type !== MESSAGE_TYPE) {
-            return
-        }
-
-        switch (action) {
-            case 'toggle': {
+        switch (data.action) {
+            case CHROME_ACTION_NAME.TOGGLE: {
                 toggle()
                 break
             }
+
+            case CHROME_ACTION_NAME.CAPTURE: {
+                app.emit('capture', data.payload.dataUri)
+                break
+            }
         }
+    })
+
+    window.addEventListener('scroll', () => {
+        app.clear()
     })
 }
 
