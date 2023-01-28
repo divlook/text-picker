@@ -1,17 +1,8 @@
 import { FC, useEffect } from 'react'
 import * as styles from '~/components/Backdrop.styles'
+import { Props, State } from '~/components/Backdrop.types'
 import { cx } from '~/libs/emotion'
 import { useLocalState } from '~/libs/hooks/local-state'
-
-interface Props {
-    activated?: boolean
-    zIndex?: number
-}
-
-interface State {
-    isDisplayed: boolean
-    isVisiabled: boolean
-}
 
 const Backdrop: FC<Props> = (props) => {
     const isActivated = props?.activated ?? false
