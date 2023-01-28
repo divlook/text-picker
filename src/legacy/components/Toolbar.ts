@@ -1,7 +1,7 @@
-import { css } from '~/emotion'
-import { MicroElement } from '~/micro-element'
-import { black, dodger_blue, white } from '~/palette'
-import { rgb } from '~/utils'
+import { css } from '~/libs/emotion'
+import { MicroElement } from '~/libs/micro-element'
+import { black, dodger_blue, white } from '~/libs/palette'
+import { rgb } from '~/libs/utils'
 
 export class Toolbar extends MicroElement {
     private isActive = false

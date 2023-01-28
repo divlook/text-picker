@@ -1,6 +1,6 @@
 import { CHROME_ACTION_NAME } from '~/chrome/constants'
 import { parseChromeMessage } from '~/chrome/events'
-import { App } from '~/components/App'
+import { App } from '~/legacy/components/App'
 
 const app = new App()
 

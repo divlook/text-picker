@@ -1,7 +1,7 @@
-import { css, cx } from '~/emotion'
-import { MicroElement } from '~/micro-element'
-import { black } from '~/palette'
-import { rgb } from '~/utils'
+import { css, cx } from '~/libs/emotion'
+import { MicroElement } from '~/libs/micro-element'
+import { black } from '~/libs/palette'
+import { rgb } from '~/libs/utils'
 
 export class Backdrop extends MicroElement {
     el = document.createElement('div')
@@ -26,7 +26,7 @@ export class Backdrop extends MicroElement {
             Backdrop.styles.container,
             cx({
                 [Backdrop.styles.display]: true,
-            })
+            }),
         )
 
         MicroElement.nextTick(() => {
@@ -35,7 +35,7 @@ export class Backdrop extends MicroElement {
                 cx({
                     [Backdrop.styles.display]: true,
                     [Backdrop.styles.active]: true,
-                })
+                }),
             )
         })
     }
@@ -46,7 +46,7 @@ export class Backdrop extends MicroElement {
             cx({
                 [Backdrop.styles.display]: true,
                 [Backdrop.styles.active]: false,
-            })
+            }),
         )
 
         MicroElement.nextTick(() => {

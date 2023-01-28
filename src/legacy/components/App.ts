@@ -1,12 +1,12 @@
 import clipboardy from 'clipboardy'
 import Tesseract from 'tesseract.js'
-import { css } from '~/emotion'
+import { css } from '~/libs/emotion'
 import { Coordinate } from '~/interfaces'
-// import { BlockParser } from '~/block-parser'
-import { MicroElement } from '~/micro-element'
-import { GuideBox } from '~/components/GuideBox'
-import { Backdrop } from '~/components/Backdrop'
-import { getZIndex, throttle } from '~/utils'
+// import { BlockParser } from '~/libs/block-parser'
+import { MicroElement } from '~/libs/micro-element'
+import { GuideBox } from '~/legacy/components/GuideBox'
+import { Backdrop } from '~/legacy/components/Backdrop'
+import { getZIndex, throttle } from '~/libs/utils'
 import { CHROME_ACTION_NAME } from '~/chrome/constants'
 import { makeChromeMessage } from '~/chrome/events'
 
@@ -184,7 +184,7 @@ export class App extends MicroElement {
             this.guideBox.toolbar.setActive(false)
 
             chrome.runtime.sendMessage(
-                makeChromeMessage(CHROME_ACTION_NAME.CAPTURE)()
+                makeChromeMessage(CHROME_ACTION_NAME.CAPTURE)(),
             )
 
             this.on('capture', (dataUri?: string) => {
@@ -221,7 +221,7 @@ export class App extends MicroElement {
                             0,
                             0,
                             outline.width,
-                            outline.height
+                            outline.height,
                         )
 
                         resolve(canvas.toDataURL())

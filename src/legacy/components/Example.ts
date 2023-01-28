@@ -1,8 +1,8 @@
-import { css } from '~/emotion'
-import { MicroElement } from '~/micro-element'
-import { App } from '~/components/App'
-import { dodger_blue, white } from '~/palette'
-import { rgb } from '~/utils'
+import { css } from '~/libs/emotion'
+import { MicroElement } from '~/libs/micro-element'
+import { App } from '~/legacy/components/App'
+import { dodger_blue, white } from '~/libs/palette'
+import { rgb } from '~/libs/utils'
 
 export class Example extends MicroElement {
     app = new App()

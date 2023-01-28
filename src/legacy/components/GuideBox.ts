@@ -1,9 +1,9 @@
-import { css, cx } from '~/emotion'
+import { css, cx } from '~/libs/emotion'
 import { Coordinate, Outline } from '~/interfaces'
-import { MicroElement } from '~/micro-element'
-import { Toolbar } from '~/components/Toolbar'
-import { rgb } from '~/utils'
-import { dodger_blue } from '~/palette'
+import { MicroElement } from '~/libs/micro-element'
+import { Toolbar } from '~/legacy/components/Toolbar'
+import { rgb } from '~/libs/utils'
+import { dodger_blue } from '~/libs/palette'
 
 export class GuideBox extends MicroElement {
     toolbar = new Toolbar()
@@ -54,7 +54,7 @@ export class GuideBox extends MicroElement {
 
             div.className = MicroElement.classes(
                 GuideBox.styles.point,
-                className
+                className,
             )
 
             this.el.appendChild(div)
@@ -91,7 +91,7 @@ export class GuideBox extends MicroElement {
                 GuideBox.styles.container,
                 cx({
                     [GuideBox.styles.active]: this.isActive,
-                })
+                }),
             )
 
             this.el.style.width = `${width}px`

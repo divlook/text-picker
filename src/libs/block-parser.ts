@@ -1,7 +1,7 @@
-import { css } from '~/emotion'
+import { css } from '~/libs/emotion'
 import { Offset, Outline } from '~/interfaces'
-import { azure_radiance_1441 } from '~/palette'
-import { rgb } from '~/utils'
+import { azure_radiance_1441 } from '~/libs/palette'
+import { rgb } from '~/libs/utils'
 
 export class BlockParser {
     static getContent(el: HTMLElement) {
