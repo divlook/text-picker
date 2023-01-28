@@ -3,7 +3,7 @@ import {
     MicroElementEmitMethod,
     MicroElementOffMethod,
     MicroElementOnMethod,
-} from '~/interfaces'
+} from '~/libs/global/types'
 
 export abstract class MicroElement {
     static nextTick(callback?: Function) {

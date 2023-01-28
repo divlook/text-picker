@@ -1,5 +1,5 @@
 import { css, cx } from '~/libs/emotion'
-import { Coordinate, Outline } from '~/interfaces'
+import { Coordinate, Outline } from '~/libs/global/types'
 import { MicroElement } from '~/libs/micro-element'
 import { Toolbar } from '~/legacy/components/Toolbar'
 import { rgb } from '~/libs/utils'

@@ -1,5 +1,5 @@
 import { css } from '~/libs/emotion'
-import { Offset, Outline } from '~/interfaces'
+import { Offset, Outline } from '~/libs/global/types'
 import { azure_radiance_1441 } from '~/libs/palette'
 import { rgb } from '~/libs/utils'
 

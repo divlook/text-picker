@@ -1,7 +1,7 @@
 import clipboardy from 'clipboardy'
 import Tesseract from 'tesseract.js'
 import { css } from '~/libs/emotion'
-import { Coordinate } from '~/interfaces'
+import { Coordinate } from '~/libs/global/types'
 // import { BlockParser } from '~/libs/block-parser'
 import { MicroElement } from '~/libs/micro-element'
 import { GuideBox } from '~/legacy/components/GuideBox'
