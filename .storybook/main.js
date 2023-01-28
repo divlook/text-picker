@@ -1,3 +1,4 @@
+const path = require('path')
 const { mergeConfig } = require('vite')
 
 /**
@@ -24,7 +25,7 @@ const config = {
         return mergeConfig(config, {
             resolve: {
                 alias: {
-                    '~': './src',
+                    '~': path.resolve(__dirname, '../src'),
                 },
             },
         })
