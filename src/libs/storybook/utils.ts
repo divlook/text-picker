@@ -1,3 +1,3 @@
-import type { Parameters } from '~/libs/storybook/types'
+import type { Storybook } from '~/libs/storybook/types'
 
-export const defineParameters = (option?: Parameters) => option
+export const defineParameters = (option?: Storybook.Parameters) => option
