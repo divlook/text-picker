@@ -1,5 +1,6 @@
 import path from 'path'
 import { defineConfig, UserConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 import { version } from './package.json'
 
 const definedModes = ['chrome.background', 'chrome.content'] as const
@@ -32,6 +33,7 @@ function getDefaultConfig(): UserConfig {
                 '~': rootDir('./src'),
             },
         },
+        plugins: [reactPlugin()],
     }
 }
 
@@ -73,5 +75,13 @@ function getChromeConfig(mode: Mode): UserConfig {
                 '~': rootDir('./src'),
             },
         },
+        plugins: [reactPlugin()],
     }
+}
+
+function reactPlugin() {
+    return react({
+        exclude: rootDir('./src/stories/**/*.tsx'),
+        include: rootDir('./src/**/*.tsx'),
+    })
 }
