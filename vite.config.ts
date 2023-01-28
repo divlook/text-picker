@@ -16,26 +16,8 @@ export default defineConfig(({ command, mode }) => {
         return getChromeConfig(typedMode)
     }
 
-    return getDefaultConfig()
+    throw new Error('사용하지 않는 기능입니다.')
 })
-
-function getDefaultConfig(): UserConfig {
-    return {
-        build: {
-            rollupOptions: {
-                input: {
-                    main: rootDir('index.html'),
-                },
-            },
-        },
-        resolve: {
-            alias: {
-                '~': rootDir('./src'),
-            },
-        },
-        plugins: [reactPlugin()],
-    }
-}
 
 function getChromeConfig(mode: Mode): UserConfig {
     let inputKey: string
@@ -71,9 +53,7 @@ function getChromeConfig(mode: Mode): UserConfig {
             },
         },
         resolve: {
-            alias: {
-                '~': rootDir('./src'),
-            },
+            alias: getPathAlias(),
         },
         plugins: [reactPlugin()],
     }
@@ -81,7 +61,13 @@ function getChromeConfig(mode: Mode): UserConfig {
 
 function reactPlugin() {
     return react({
-        exclude: rootDir('./src/stories/**/*.tsx'),
+        exclude: rootDir('./src/**/*.stories.*'),
         include: rootDir('./src/**/*.tsx'),
     })
+}
+
+export function getPathAlias() {
+    return {
+        '~': rootDir('./src'),
+    }
 }
