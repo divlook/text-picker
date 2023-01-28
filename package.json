@@ -6,7 +6,10 @@
     "chrome-extension"
   ],
   "scripts": {
-    "build": "bin/chrome"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "chrome": "bin/chrome"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",
