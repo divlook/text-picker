@@ -2,13 +2,13 @@ import { FC, useEffect } from 'react'
 import * as styles from '~/components/Backdrop.styles'
 import { Props, State } from '~/components/Backdrop.types'
 import { cx } from '~/libs/emotion'
-import { useLocalState } from '~/libs/hooks/local-state'
+import { useSimpleState } from '~/libs/hooks/simple-state'
 
 const Backdrop: FC<Props> = (props) => {
     const isActivated = props?.activated ?? false
     const zIndex = props.zIndex ?? 0
 
-    const [state, setState] = useLocalState<State>({
+    const [state, setState] = useSimpleState<State>({
         isDisplayed: false,
         isVisiabled: false,
     })
