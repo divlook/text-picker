@@ -18,7 +18,7 @@ const Backdrop: FC<Props> = (props) => {
             isDisplayed: true,
         })
 
-        window.requestAnimationFrame(() => {
+        setTimeout(() => {
             setState({
                 isVisiabled: true,
             })
