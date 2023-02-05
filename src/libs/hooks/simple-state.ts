@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 /**
  * 단순한 setState
+ *
+ * @returns [state, dispatch, stateRef]
  */
 export const useSimpleState = <State = {}>(
     initialState: State,
@@ -9,6 +11,8 @@ export const useSimpleState = <State = {}>(
     onUpdated?: (state: State) => void,
 ) => {
     const [state, setState] = useState(initialState)
+
+    const stateRef = useRef(state)
 
     const dispatch = (next: Partial<State>) => {
         setState((prev) => {
@@ -23,9 +27,11 @@ export const useSimpleState = <State = {}>(
         })
     }
 
+    stateRef.current = state
+
     useEffect(() => {
         onUpdated?.(state)
     }, [state])
 
-    return [state, dispatch] as const
+    return [state, dispatch, stateRef] as const
 }
