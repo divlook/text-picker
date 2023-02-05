@@ -1,9 +1,11 @@
+import clipboardy from 'clipboardy'
+
 /**
  * @param duration 단위 ms
  */
 export const throttle = <Callback extends (...args: any[]) => void>(
     duration: number,
-    callback: Callback
+    callback: Callback,
 ) => {
     const lastCallback = debounce(duration, callback)
 
@@ -29,7 +31,7 @@ export const throttle = <Callback extends (...args: any[]) => void>(
  */
 export const debounce = <Callback extends (...args: any[]) => void>(
     duration: number,
-    callback: Callback
+    callback: Callback,
 ) => {
     let timerId = 0
 
@@ -86,9 +88,45 @@ export const getZIndex = (el: HTMLElement): number => {
         const children = Array.from(el.children) as HTMLElement[]
 
         return children.reduce((zIndex, child) => {
-            return Math.max(zIndex, getZIndex(child))
+            return Math.min(Math.max(zIndex, getZIndex(child)), 999999)
         }, 0)
     }
 
     return zIndex
+}
+
+export const copyText = async (text: string) => {
+    try {
+        await clipboardy.write(text)
+
+        return true
+    } catch {
+        return false
+    }
+}
+
+export function classes(
+    ...args: (string | string[] | Record<string, any> | Record<string, any>[])[]
+) {
+    const validClasses: string[] = []
+
+    for (const arg of args) {
+        if (Array.isArray(arg)) {
+            validClasses.push(classes(...arg))
+            continue
+        }
+
+        if (typeof arg === 'string') {
+            validClasses.push(arg)
+            continue
+        }
+
+        for (const key in arg) {
+            if (!!arg[key]) {
+                validClasses.push(key)
+            }
+        }
+    }
+
+    return validClasses.join(' ')
 }

@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 
 /**
- * 단순한 setState
+ * useSmartState
  *
  * @returns [state, dispatch, stateRef]
  */
-export const useSimpleState = <State = {}>(
+export const useSmartState = <State = {}>(
     initialState: State,
     onBeforeUpdate?: (prev: State, next: Partial<State>) => State,
     onUpdated?: (state: State) => void,
@@ -14,7 +14,9 @@ export const useSimpleState = <State = {}>(
 
     const stateRef = useRef(state)
 
-    const dispatch = (next: Partial<State> | ((state: State) => State)) => {
+    const dispatch = (
+        next: Partial<State> | ((state: State) => Partial<State>),
+    ) => {
         setState((prev) => {
             if (typeof next === 'function') {
                 next = next(prev)

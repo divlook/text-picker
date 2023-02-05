@@ -1,5 +1,6 @@
 export interface Props {
     activated?: boolean
+    hidden?: boolean
     zIndex?: number
 }
 

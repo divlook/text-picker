@@ -4,10 +4,6 @@ import Backdrop from '~/components/Backdrop'
 export default {
     title: 'Components/Backdrop',
     component: Backdrop,
-    argTypes: {
-        activated: {},
-        zIndex: {},
-    },
 } as ComponentMeta<typeof Backdrop>
 
 const Template: ComponentStory<typeof Backdrop> = (args) => (

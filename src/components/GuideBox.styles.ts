@@ -19,7 +19,7 @@ export const container = css`
 `
 
 export const activated = css`
-    display: block !important;
+    display: block;
 `
 
 export const crosshair = css`

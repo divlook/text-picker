@@ -4,11 +4,6 @@ import GuideBox from '~/components/GuideBox'
 export default {
     title: 'Components/GuideBox',
     component: GuideBox,
-    argTypes: {
-        coordinates: {},
-        zIndex: {},
-        onUpdateOutline: {},
-    },
 } as ComponentMeta<typeof GuideBox>
 
 const Template: ComponentStory<typeof GuideBox> = (args) => (

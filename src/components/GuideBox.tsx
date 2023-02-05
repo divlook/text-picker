@@ -1,7 +1,7 @@
 import { FC, useCallback, useEffect, useRef } from 'react'
-import { useSimpleState } from '~/libs/hooks/simple-state'
+import { useSmartState } from '~/libs/hooks/smart-state'
 import * as styles from '~/components/GuideBox.styles'
-import { Mode, Props, State } from '~/components/GuideBox.types'
+import { Mode, PointPosition, Props, State } from '~/components/GuideBox.types'
 import { cx } from '~/libs/emotion'
 import { Coordinate } from '~/libs/global/types'
 import { useComposedRef } from '~/libs/hooks/composed-ref'
@@ -9,7 +9,7 @@ import Backdrop from '~/components/Backdrop'
 import { throttle } from '~/libs/utils'
 
 const GuideBox: FC<Props> = (props) => {
-    const [state, setState] = useSimpleState<State>({
+    const [state, setState] = useSmartState<State>({
         coordinates: props.coordinates ?? [],
         dragTargetEl: null,
         outline: {
@@ -24,12 +24,14 @@ const GuideBox: FC<Props> = (props) => {
 
     const scope = useComposedRef(() => {
         const zIndex = props.zIndex ?? 0
+        const isHidden = props.hidden ?? false
         const throttleTime = props.throttleTime ?? 300
         const onUpdateOutline = props.onUpdateOutline ?? (() => {})
 
         return {
             ...state,
             zIndex,
+            isHidden,
             throttleTime,
             onUpdateOutline,
             isActivated: state.coordinates.length > 0,
@@ -55,7 +57,7 @@ const GuideBox: FC<Props> = (props) => {
 
     const onUpdateOutline = useCallback(
         throttle(scope.current.throttleTime, scope.current.onUpdateOutline),
-        [props.throttleTime, props.onUpdateOutline],
+        [props.throttleTime],
     )
 
     function calcOutline(nextCoordinates: Coordinate[]) {
@@ -102,13 +104,13 @@ const GuideBox: FC<Props> = (props) => {
             const pointPosition = getPointPosition(x, y)
 
             switch (pointPosition) {
-                case 'outside':
-                case 'none': {
+                case PointPosition.Outside:
+                case PointPosition.None: {
                     clearState()
                     break
                 }
 
-                case 'border': {
+                case PointPosition.Border: {
                     ev.preventDefault()
                     ev.stopPropagation()
                     break
@@ -288,7 +290,7 @@ const GuideBox: FC<Props> = (props) => {
 
     function getPointPosition(x: number, y: number) {
         if (!scope.current.isDone) {
-            return 'none'
+            return PointPosition.None
         }
 
         /**
@@ -304,7 +306,7 @@ const GuideBox: FC<Props> = (props) => {
         const isInside = () => left < x && top < y && right > x && bottom > y
 
         if (isInside()) {
-            return 'inside'
+            return PointPosition.Inside
         }
 
         left -= allowableRange
@@ -313,13 +315,15 @@ const GuideBox: FC<Props> = (props) => {
         bottom += allowableRange
 
         if (isInside()) {
-            return 'border'
+            return PointPosition.Border
         }
 
-        return 'outside'
+        return PointPosition.Outside
     }
 
     function clearState() {
+        props.onEnd?.()
+
         setState({
             coordinates: [],
             dragTargetEl: null,
@@ -353,7 +357,7 @@ const GuideBox: FC<Props> = (props) => {
         window.addEventListener('mousemove', onMouseMove, true)
         window.addEventListener('mouseup', onMouseUp, true)
 
-        setBodyCrosshair(scope.current.isActivated)
+        setBodyCrosshair(!scope.current.isActivated)
 
         return () => {
             window.removeEventListener('click', onClick, true)
@@ -376,7 +380,7 @@ const GuideBox: FC<Props> = (props) => {
             calcOutline(scope.current.coordinates.slice(0, 2))
         }
 
-        setBodyCrosshair(scope.current.isActivated)
+        setBodyCrosshair(!scope.current.isActivated)
     }, [scope.current.coordinates])
 
     useEffect(() => {
@@ -389,6 +393,7 @@ const GuideBox: FC<Props> = (props) => {
                 ref={rootEl}
                 className={cx(styles.container, {
                     [styles.activated]: scope.current.isActivated,
+                    ['!hidden']: scope.current.isHidden,
                 })}
                 style={{
                     zIndex: scope.current.zIndex,
@@ -407,6 +412,7 @@ const GuideBox: FC<Props> = (props) => {
             </div>
 
             <Backdrop
+                hidden={scope.current.isHidden}
                 zIndex={scope.current.zIndex}
                 activated={!scope.current.isActivated}
             />

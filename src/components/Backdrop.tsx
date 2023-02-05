@@ -2,13 +2,13 @@ import { FC, useEffect } from 'react'
 import * as styles from '~/components/Backdrop.styles'
 import { Props, State } from '~/components/Backdrop.types'
 import { cx } from '~/libs/emotion'
-import { useSimpleState } from '~/libs/hooks/simple-state'
+import { useSmartState } from '~/libs/hooks/smart-state'
 
 const Backdrop: FC<Props> = (props) => {
     const isActivated = props?.activated ?? false
     const zIndex = props.zIndex ?? 0
 
-    const [state, setState] = useSimpleState<State>({
+    const [state, setState] = useSmartState<State>({
         isDisplayed: false,
         isVisiabled: false,
     })
@@ -53,7 +53,7 @@ const Backdrop: FC<Props> = (props) => {
     return (
         <div
             className={cx(styles.container, {
-                [styles.displayed]: state.isDisplayed,
+                [styles.displayed]: state.isDisplayed && !props.hidden,
                 [styles.visiabled]: state.isVisiabled,
             })}
             style={{
