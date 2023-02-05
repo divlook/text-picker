@@ -14,8 +14,12 @@ export const useSimpleState = <State = {}>(
 
     const stateRef = useRef(state)
 
-    const dispatch = (next: Partial<State>) => {
+    const dispatch = (next: Partial<State> | ((state: State) => State)) => {
         setState((prev) => {
+            if (typeof next === 'function') {
+                next = next(prev)
+            }
+
             if (typeof onBeforeUpdate === 'function') {
                 return onBeforeUpdate(prev, next)
             }
