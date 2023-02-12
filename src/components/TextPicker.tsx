@@ -72,6 +72,7 @@ const TextPicker: FC<Props> = (props) => {
                     zIndex={state.zIndex}
                     onEnd={end}
                     onUpdateOutline={props.onMove}
+                    hidden={props.hidden}
                     //
                 />
             )}
@@ -85,6 +86,7 @@ const TextPicker: FC<Props> = (props) => {
                         props.onBlockClick &&
                         (() => props.onBlockClick?.(outline, key))
                     }
+                    hidden={props.hidden}
                     //
                 />
             ))}
