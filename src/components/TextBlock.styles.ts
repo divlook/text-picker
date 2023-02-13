@@ -10,3 +10,11 @@ export const block = css`
     outline-width: 1px !important;
     outline-offset: -1px !important;
 `
+
+export const cursorPointer = css`
+    cursor: pointer;
+`
+
+export const hidden = css`
+    display: none !important;
+`

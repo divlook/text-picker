@@ -18,6 +18,10 @@ export const container = css`
     display: none;
 `
 
+export const hidden = css`
+    display: none !important;
+`
+
 export const activated = css`
     display: block;
 `

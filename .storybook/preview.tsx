@@ -1,5 +1,4 @@
 import React, { StrictMode } from 'react'
-import '~/assets/styles/tailwind.css'
 
 export const parameters = {
     actions: { argTypesRegex: '^on[A-Z].*' },
