@@ -1,4 +1,4 @@
-import { CHROME_ACTION_NAME } from '~/chrome/constants'
+import { ActionType } from '~/chrome/types'
 import { makeChromeMessage, parseChromeMessage } from '~/chrome/events'
 
 const state = {
@@ -13,7 +13,9 @@ chrome.action.onClicked.addListener((tab) => {
 
         chrome.tabs.sendMessage(
             tabId,
-            makeChromeMessage(CHROME_ACTION_NAME.TOGGLE)()
+            makeChromeMessage({
+                type: ActionType.Toggle,
+            }),
         )
     }
 })
@@ -21,10 +23,14 @@ chrome.action.onClicked.addListener((tab) => {
 chrome.runtime.onMessage.addListener(async (message) => {
     if (!state.tabId) return
 
-    const data = parseChromeMessage(message)
+    const action = parseChromeMessage(message)
 
-    switch (data.action) {
-        case CHROME_ACTION_NAME.CAPTURE: {
+    if (action === null) return
+
+    const { type } = action
+
+    switch (type) {
+        case ActionType.Capture: {
             try {
                 const dataUri = await chrome.tabs.captureVisibleTab({
                     format: 'png',
@@ -32,14 +38,19 @@ chrome.runtime.onMessage.addListener(async (message) => {
 
                 chrome.tabs.sendMessage(
                     state.tabId,
-                    makeChromeMessage(CHROME_ACTION_NAME.CAPTURE)(dataUri)
+                    makeChromeMessage({
+                        type: ActionType.CaptureResult,
+                        dataUri,
+                    }),
                 )
             } catch (error) {
                 console.error(error)
 
                 chrome.tabs.sendMessage(
                     state.tabId,
-                    makeChromeMessage(CHROME_ACTION_NAME.CAPTURE)()
+                    makeChromeMessage({
+                        type: ActionType.CaptureResult,
+                    }),
                 )
             }
             break

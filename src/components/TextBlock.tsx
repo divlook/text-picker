@@ -8,8 +8,8 @@ const TextBlock: FC<Props> = (props) => {
         <>
             <div
                 className={classes(styles.block, {
-                    'cursor-pointer': typeof props.onClick === 'function',
-                    ['!hidden']: props.hidden ?? false,
+                    [styles.cursorPointer]: typeof props.onClick === 'function',
+                    [styles.hidden]: props.hidden ?? false,
                 })}
                 style={{
                     top: props.outline.y,

@@ -65,6 +65,6 @@ function createManifest() {
 
     fs.writeFileSync(
         path.join(buildDir, 'manifest.json'),
-        JSON.stringify(json, null, 4)
+        JSON.stringify(json, null, 4),
     )
 }

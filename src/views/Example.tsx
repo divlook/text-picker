@@ -1,6 +1,5 @@
 import { FC, useCallback } from 'react'
 import TextPicker from '~/components/TextPicker'
-import '~/assets/styles/tailwind.css'
 import * as styles from '~/views/Example.styles'
 import { useSmartState } from '~/libs/hooks/smart-state'
 import { Outline } from '~/libs/global/types'

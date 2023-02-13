@@ -393,7 +393,7 @@ const GuideBox: FC<Props> = (props) => {
                 ref={rootEl}
                 className={cx(styles.container, {
                     [styles.activated]: scope.current.isActivated,
-                    ['!hidden']: scope.current.isHidden,
+                    [styles.hidden]: scope.current.isHidden,
                 })}
                 style={{
                     zIndex: scope.current.zIndex,

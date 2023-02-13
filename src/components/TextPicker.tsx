@@ -69,7 +69,7 @@ const TextPicker: FC<Props> = (props) => {
         <>
             {state.isRunning && (
                 <GuideBox
-                    zIndex={state.zIndex}
+                    zIndex={state.zIndex - 1}
                     onEnd={end}
                     onUpdateOutline={props.onMove}
                     hidden={props.hidden}
@@ -80,7 +80,7 @@ const TextPicker: FC<Props> = (props) => {
             {props.blocks?.map((outline, key) => (
                 <TextBlock
                     key={key}
-                    zIndex={state.zIndex - 1}
+                    zIndex={state.zIndex}
                     outline={outline}
                     onClick={
                         props.onBlockClick &&

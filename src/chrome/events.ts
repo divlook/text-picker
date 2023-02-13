@@ -1,48 +1,23 @@
-import { CHROME_ACTION_NAME, CHROME_MESSAGE_TYPE } from '~/chrome/constants'
+import { CHROME_APP_ID } from '~/chrome/constants'
+import { ActionType, ChromeAction } from '~/chrome/types'
 
-export const makeChromeMessage = (action: CHROME_ACTION_NAME) => {
-    switch (action) {
-        case CHROME_ACTION_NAME.TOGGLE:
-            return () =>
-                ({
-                    type: CHROME_MESSAGE_TYPE,
-                    action: CHROME_ACTION_NAME.TOGGLE,
-                } as const)
+const actionTypeSet = new Set(Object.values(ActionType))
 
-        case CHROME_ACTION_NAME.CAPTURE:
-            return (dataUri?: string) =>
-                ({
-                    type: CHROME_MESSAGE_TYPE,
-                    action: CHROME_ACTION_NAME.CAPTURE,
-                    payload: {
-                        dataUri,
-                    },
-                } as const)
-
-        case CHROME_ACTION_NAME.UNDEFINED:
-            return () =>
-                ({
-                    type: CHROME_MESSAGE_TYPE,
-                    action: CHROME_ACTION_NAME.UNDEFINED,
-                } as const)
+export const makeChromeMessage = (action: ChromeAction) => {
+    if (actionTypeSet.has(action.type)) {
+        return {
+            appId: CHROME_APP_ID,
+            ...action,
+        }
     }
+
+    return null
 }
 
 export const parseChromeMessage = (message: any) => {
-    if (!message?.type || message.type !== CHROME_MESSAGE_TYPE) {
-        return {
-            action: CHROME_ACTION_NAME.UNDEFINED,
-        } as const
+    if (message?.appId === CHROME_APP_ID) {
+        return message as ChromeAction
     }
 
-    return message as
-        | {
-              action: CHROME_ACTION_NAME.TOGGLE
-          }
-        | {
-              action: CHROME_ACTION_NAME.CAPTURE
-              payload: {
-                  dataUri?: string
-              }
-          }
+    return null
 }

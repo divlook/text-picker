@@ -1,4 +1,5 @@
 import clipboardy from 'clipboardy'
+import { Outline } from '~/libs/global/types'
 
 /**
  * @param duration 단위 ms
@@ -129,4 +130,39 @@ export function classes(
     }
 
     return validClasses.join(' ')
+}
+
+export const crop = (dataUri: string, outline: Outline) => {
+    return new Promise<string>((resolve) => {
+        const img = new Image()
+        img.src = dataUri
+        img.onload = () => {
+            const canvas = document.createElement('canvas')
+            const ratio = window.devicePixelRatio
+
+            canvas.width = outline.width
+            canvas.height = outline.height
+
+            const ctx = canvas.getContext('2d')
+
+            if (ctx) {
+                const left = outline.x
+                const top = outline.y - window.scrollY
+
+                ctx.drawImage(
+                    img,
+                    left * ratio,
+                    top * ratio,
+                    outline.width * ratio,
+                    outline.height * ratio,
+                    0,
+                    0,
+                    outline.width,
+                    outline.height,
+                )
+
+                resolve(canvas.toDataURL())
+            }
+        }
+    })
 }

@@ -5,7 +5,7 @@ import { version } from './package.json'
 
 const definedModes = ['chrome.background', 'chrome.content'] as const
 
-type Mode = typeof definedModes[number]
+type Mode = (typeof definedModes)[number]
 
 const rootDir = (...paths: string[]) => path.resolve(__dirname, ...paths)
 
@@ -32,7 +32,7 @@ function getChromeConfig(mode: Mode): UserConfig {
 
         case 'chrome.content': {
             inputKey = 'content'
-            inputValue = rootDir('src/chrome/content.ts')
+            inputValue = rootDir('src/chrome/content.tsx')
             break
         }
     }
