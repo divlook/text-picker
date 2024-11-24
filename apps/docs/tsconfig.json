@@ -1,4 +1,0 @@
-{
-  "extends": "@pkg/typescript-config/vite.json",
-  "include": ["src"]
-}

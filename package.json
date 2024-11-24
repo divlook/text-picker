@@ -3,11 +3,15 @@
   "private": true,
   "packageManager": "pnpm@9.14.2",
   "scripts": {
+    "dev": "turbo dev",
+    "ui": "turbo storybook",
+    "build": "turbo build",
     "lint": "turbo lint",
-    "format": "prettier --write \"(apps|packages)/**/*.{ts,tsx}\""
+    "format": "prettier --write \"(apps|packages)/**/*.{js,jsx,ts,tsx}\""
   },
+  "prettier": "@text-picker/config/prettier.config.js",
   "devDependencies": {
-    "eslint": "^9.15.0",
+    "@text-picker/config": "workspace:*",
     "prettier": "^3.3.3",
     "turbo": "^2.3.0"
   }

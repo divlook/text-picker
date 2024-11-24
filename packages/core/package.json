@@ -1,0 +1,23 @@
+{
+  "name": "@text-picker/core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "devDependencies": {
+    "@text-picker/config": "workspace:*",
+    "prettier": "^3.3.3",
+    "tsup": "^8.3.5",
+    "typescript": "~5.6.3"
+  }
+}

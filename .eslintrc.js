@@ -1,6 +1,0 @@
-/** @type {import("eslint").Linter.Config} */
-module.exports = {
-  root: true,
-  extends: ['@pkg/eslint-config/index.js'],
-  ignores: ['/apps-deprecated'],
-}
