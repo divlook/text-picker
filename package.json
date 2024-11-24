@@ -3,10 +3,10 @@
   "private": true,
   "packageManager": "pnpm@9.14.2",
   "scripts": {
-    "dev": "turbo dev",
-    "ui": "turbo storybook",
-    "build": "turbo build",
-    "lint": "turbo lint",
+    "dev": "turbo turbo:dev",
+    "ui": "turbo turbo:ui",
+    "build": "turbo turbo:build",
+    "lint": "turbo turbo:lint",
     "format": "prettier --write \"(apps|packages)/**/*.{js,jsx,ts,tsx}\""
   },
   "prettier": "@text-picker/config/prettier.config.js",

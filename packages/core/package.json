@@ -5,7 +5,10 @@
   "type": "module",
   "scripts": {
     "build": "tsup",
-    "dev": "tsup --watch"
+    "dev": "tsup --watch",
+    "turbo:build": "pnpm build",
+    "turbo:dev": "pnpm dev",
+    "turbo:ui": "pnpm dev"
   },
   "exports": {
     ".": {
