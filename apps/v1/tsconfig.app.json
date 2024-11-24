@@ -32,7 +32,6 @@
     }
   },
   "include": [
-    "src",
-    "../../packages"
+    "src"
   ]
 }

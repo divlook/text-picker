@@ -2,17 +2,25 @@
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
     "turbo:build": {
-      "dependsOn": ["^build"],
+      "dependsOn": [
+        "^turbo:build"
+      ],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": ["dist/**"]
     },
     "turbo:dev": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "dependsOn": [
+        "@text-picker/core#turbo:build"
+      ]
     },
     "turbo:ui": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "dependsOn": [
+        "@text-picker/core#turbo:build"
+      ]
     }
   }
 }
