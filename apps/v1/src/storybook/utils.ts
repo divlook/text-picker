@@ -23,6 +23,8 @@ export const TypedParameters = z
     }
   })
 
-export const defineParameters = (input: z.input<typeof TypedParameters>) => {
+export const defineParameters = (
+  input: z.input<typeof TypedParameters> = {},
+) => {
   return TypedParameters.parse(input)
 }
