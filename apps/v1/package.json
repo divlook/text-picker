@@ -18,10 +18,10 @@
   "dependencies": {
     "@text-picker/core": "workspace:*",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@text-picker/config": "workspace:*",
     "@chromatic-com/storybook": "^3.2.2",
     "@eslint/js": "^9.13.0",
     "@storybook/addon-essentials": "^8.4.5",
@@ -31,6 +31,7 @@
     "@storybook/react": "^8.4.5",
     "@storybook/react-vite": "^8.4.5",
     "@storybook/test": "^8.4.5",
+    "@text-picker/config": "workspace:*",
     "@types/node": "20",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",

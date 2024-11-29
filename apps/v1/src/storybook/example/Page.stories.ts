@@ -1,15 +1,15 @@
+import { defineParameters } from '@/storybook/utils'
 import type { Meta, StoryObj } from '@storybook/react'
 import { expect, userEvent, within } from '@storybook/test'
-
 import { Page } from './Page'
 
 const meta = {
   title: 'Example/Page',
   component: Page,
-  parameters: {
+  parameters: defineParameters({
     // More on how to position stories at: https://storybook.js.org/docs/configure/story-layout
     layout: 'fullscreen',
-  },
+  }),
 } satisfies Meta<typeof Page>
 
 export default meta
