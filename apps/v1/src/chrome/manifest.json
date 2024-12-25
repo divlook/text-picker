@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json.schemastore.org/chrome-manifest",
+  "name": "TODO: build time",
+  "description": "TODO: build time",
+  "version": "TODO: build time",
+  "manifest_version": 3,
+  "icons": {
+    "16": "/icon@16.png",
+    "48": "/icon@48.png",
+    "128": "/icon@128.png"
+  },
+  "permissions": [
+    "activeTab",
+    "clipboardWrite"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "TODO: build time"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content.js"
+      ]
+    }
+  ]
+}

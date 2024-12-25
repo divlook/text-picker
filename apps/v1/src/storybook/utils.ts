@@ -1,30 +1,7 @@
-import { z } from 'zod'
-
-export const TypedParameters = z
-  .object({
-    layout: z.enum(['centered', 'fullscreen', 'padded']).default('padded'),
-    backgrounds: z.object({
-      default: z.enum(['light', 'dark', 'white']).default('light'),
-    }),
-  })
-  .partial()
-  .passthrough()
-  .transform((input) => {
-    return {
-      ...input,
-      backgrounds: {
-        default: input.backgrounds?.default || 'light',
-        values: [
-          { name: 'light', value: '#F8F8F8' },
-          { name: 'dark', value: '#333' },
-          { name: 'white', value: '#fff' },
-        ],
-      },
-    }
-  })
+import { StorybookSchema } from '@/storybook/schema'
 
 export const defineParameters = (
-  input: z.input<typeof TypedParameters> = {},
+  input: StorybookSchema.TypedParameters.Input = {},
 ) => {
-  return TypedParameters.parse(input)
+  return StorybookSchema.TypedParameters.parse(input)
 }

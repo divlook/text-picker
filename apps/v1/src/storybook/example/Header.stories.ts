@@ -1,7 +1,7 @@
 import { defineParameters } from '@/storybook/utils'
 import type { Meta, StoryObj } from '@storybook/react'
 import { fn } from '@storybook/test'
-import { Header } from './Header'
+import { Header } from './Header.tsx'
 
 const meta = {
   title: 'example/Header',

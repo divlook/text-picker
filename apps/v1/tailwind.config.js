@@ -2,7 +2,11 @@
 export default {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        dodger_blue: '#1e90ff',
+      },
+    },
   },
   plugins: [],
 }

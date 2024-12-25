@@ -1,6 +1,6 @@
-import { FC, useState } from 'react'
+import { type FC, useState } from 'react'
 
-import { Header } from './Header'
+import { Header } from './Header.tsx'
 import './page.css'
 
 type User = {

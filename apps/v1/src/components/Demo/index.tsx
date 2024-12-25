@@ -1,9 +1,4 @@
-import '@/app/style.css'
-import { hi } from '@text-picker/core'
-
-const App = () => {
-  console.log(hi())
-
+function Demo() {
   return (
     <>
       <div className="flex flex-1 bg-white">
@@ -14,4 +9,4 @@ const App = () => {
   )
 }
 
-export default App
+export default Demo
