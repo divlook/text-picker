@@ -8,18 +8,10 @@ import { TextPickerSchema } from '@/components/TextPicker/schema'
 import Toast from '@/components/Toast'
 import { useToast } from '@/components/Toast/hooks'
 import { type BoundingBoxSchema, pixel } from '@text-picker/core'
+import type { RetrievedNode } from '@text-picker/core/retrieved-node'
+import { Retriever } from '@text-picker/core/retriever'
 import classNames from 'classnames'
 import { useEffect, useMemo, useRef, useState } from 'react'
-
-/*
-
-TODO: 탐색 코어 기능 구현
-TODO: 탐색된 요소가 없으면 버튼 비활성화
-TODO: 버튼 클릭하면
-  TODO: 내용 복사 후 토스트 출력
-  TODO: 이벤트 발생
-
-*/
 
 function TextPicker(_props: TextPickerSchema.Props.Input) {
   const props = TextPickerSchema.Props.parse(_props)
@@ -28,7 +20,11 @@ function TextPicker(_props: TextPickerSchema.Props.Input) {
 
   const guideBoxController = useRef<GuideBoxSchema.Controller>(null)
 
+  const retriever = useRef(new Retriever())
+
   const toast = useToast()
+
+  const [lastNode, updateLastNode] = useState<RetrievedNode | null>(null)
 
   const [boxLayout, setBoxLayout] = useState<BoundingBoxSchema | null>(null)
 
@@ -46,6 +42,41 @@ function TextPicker(_props: TextPickerSchema.Props.Input) {
     [boxLayout],
   )
 
+  const hasElements = useMemo(() => {
+    return (lastNode?.elements.length || 0) > 0
+  }, [lastNode?.elements.length])
+
+  const elementBoundingRects = useMemo(() => {
+    return (
+      lastNode?.elements.map((el, index) => {
+        return {
+          key: `${index}_${Date.now()}`,
+          rect: el.getBoundingClientRect(),
+        }
+      }) ?? []
+    )
+  }, [lastNode?.elements])
+
+  function onChangeBoxLayout(layout: BoundingBoxSchema) {
+    setBoxLayout(layout)
+    retriever.current.retrieve(layout)
+  }
+
+  function quit() {
+    updateLastNode(null)
+    props.onQuit?.()
+  }
+
+  useEffect(() => {
+    retriever.current.on((node) => {
+      updateLastNode(node)
+    })
+
+    return () => {
+      retriever.current.clear()
+    }
+  }, [])
+
   useEffect(() => {
     if (props.displayed) {
       guideBoxController.current?.resetState()
@@ -57,13 +88,29 @@ function TextPicker(_props: TextPickerSchema.Props.Input) {
       className={classNames(
         props.className,
         'fixed top-0 left-0 h-screen w-screen',
-        !props.displayed && 'pointer-events-none',
+        {
+          'pointer-events-none': !props.displayed,
+        },
       )}
       style={{
         ...props.style,
         zIndex: props.zIndex ?? 'auto',
       }}
+      data-retriever-ignored
     >
+      {elementBoundingRects.map(({ key, rect }) => (
+        <div
+          key={key}
+          className="-outline-offset-1 absolute bg-dodger_blue/20 outline outline-1 outline-dodger_blue"
+          style={{
+            top: pixel(rect.top),
+            left: pixel(rect.left),
+            width: pixel(rect.width),
+            height: pixel(rect.height),
+          }}
+        />
+      ))}
+
       <HoleyDimmed
         className="absolute top-0 left-0 z-[1]"
         displayed={props.displayed}
@@ -87,22 +134,15 @@ function TextPicker(_props: TextPickerSchema.Props.Input) {
                   key={action}
                   theme="primary"
                   label="Copy text"
-                  onClick={() => {
-                    // TODO: 내용 복사 후 토스트 출력
-                    toast.showMessage('Text copied')
-                  }}
-                />
-              )
-            }
-            case 'copy-html': {
-              return (
-                <Button
-                  key={action}
-                  theme="primary"
-                  label="Copy HTML"
-                  onClick={() => {
-                    // TODO: 내용 복사 후 토스트 출력
-                    toast.showMessage('HTML copied')
+                  disalbed={!hasElements}
+                  onClick={async () => {
+                    const { code, message } = (await lastNode?.copyText()) ?? {}
+
+                    if (code === 'SUCCESS') {
+                      toast.showMessage('Text copied')
+                    } else if (message) {
+                      toast.showMessage(message)
+                    }
                   }}
                 />
               )
@@ -114,7 +154,7 @@ function TextPicker(_props: TextPickerSchema.Props.Input) {
                   theme="danger"
                   label="Quit"
                   onClick={() => {
-                    // TODO: 이벤트 발생
+                    quit()
                   }}
                 />
               )
@@ -148,7 +188,7 @@ function TextPicker(_props: TextPickerSchema.Props.Input) {
         }}
         inactive={!props.displayed}
         onLayout={(layout) => {
-          setBoxLayout(layout.absolute)
+          onChangeBoxLayout(layout.absolute)
         }}
       />
     </div>

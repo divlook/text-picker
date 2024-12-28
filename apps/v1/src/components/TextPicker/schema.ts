@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export namespace TextPickerSchema {
-  export const Action = z.enum(['copy-text', 'copy-html', 'quit'])
+  export const Action = z.enum(['copy-text', 'quit'])
   export type Action = z.infer<typeof Action>
 
   export const Props = z.object({
@@ -19,6 +19,7 @@ export namespace TextPickerSchema {
         }
         return input
       }),
+    onQuit: z.custom<() => void>().optional(),
   })
   export type Props = z.infer<typeof Props>
   export namespace Props {
