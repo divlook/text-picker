@@ -7,7 +7,13 @@ export namespace TextPickerSchema {
   export const Props = z.object({
     className: z.string().optional(),
     style: z.custom<React.CSSProperties>().optional(),
-    zIndex: z.number().optional(),
+    /**
+     * @default 2147483647
+     */
+    zIndex: z
+      .number()
+      .optional()
+      .default(2 ** 31 - 1),
     displayed: z.boolean().optional().default(false),
     actions: z
       .array(Action)

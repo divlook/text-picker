@@ -94,7 +94,7 @@ function TextPicker(_props: TextPickerSchema.Props.Input) {
       )}
       style={{
         ...props.style,
-        zIndex: props.zIndex ?? 'auto',
+        zIndex: props.zIndex,
       }}
       data-retriever-ignored
     >
