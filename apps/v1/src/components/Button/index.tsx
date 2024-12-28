@@ -9,7 +9,8 @@ function Button(_props: ButtonSchema.PropsInput) {
     <button
       className={classNames(
         props.className,
-        'rounded border bg-white/40 px-2 py-1 font-medium shadow backdrop-blur active:text-white',
+        'rounded border bg-white/40 px-2 py-1 font-medium shadow backdrop-blur',
+        !props.disalbed && 'active:text-white',
         props.disalbed && 'opacity-40',
         [
           props.theme === 'primary' && [
