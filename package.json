@@ -3,8 +3,8 @@
   "private": true,
   "packageManager": "pnpm@9.15.0",
   "scripts": {
-    "dev": "turbo turbo:dev",
-    "ui": "turbo turbo:ui",
+    "dev": "turbo watch turbo:dev",
+    "ui": "turbo watch turbo:ui",
     "build": "turbo turbo:build",
     "lint": "pnpm biome lint",
     "format": "biome format --write"

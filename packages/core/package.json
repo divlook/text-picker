@@ -5,10 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "tsup",
-    "dev": "nodemon --watch src --exec \"tsup\"",
-    "turbo:build": "pnpm build",
-    "turbo:dev": "pnpm dev",
-    "turbo:ui": "pnpm dev"
+    "dev": "tsup --watch",
+    "turbo:build": "pnpm build"
   },
   "files": [
     "dist"
@@ -26,7 +24,6 @@
   },
   "devDependencies": {
     "chrome-types": "latest",
-    "nodemon": "^3.1.9",
     "tsup": "^8.3.5",
     "typescript": "~5.6.3"
   },
