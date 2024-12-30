@@ -8,7 +8,8 @@
   "files": {
     "ignoreUnknown": false,
     "ignore": [
-      "apps-deprecated"
+      "apps-deprecated",
+      "release"
     ]
   },
   "formatter": {

@@ -1,16 +1,16 @@
 {
   "name": "v1",
   "version": "0.0.0",
+  "description": "An app that makes it easy to extract the text you need from web pages.",
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsc -b && vite build",
-    "dev": "vite",
+    "build": "tsc -b && vite build -c vite/config/background.ts && vite build -c vite/config/content.ts && vite build -c vite/config/main.ts",
     "preview": "vite preview",
     "ui": "storybook dev -p 6006",
     "ui.build": "storybook build",
     "turbo:build": "pnpm build",
-    "turbo:dev": "pnpm dev",
+    "turbo:dev": "pnpm build",
     "turbo:ui": "pnpm ui"
   },
   "dependencies": {
