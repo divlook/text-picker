@@ -87,6 +87,7 @@ function TextPicker(_props: TextPickerSchema.Props.Input) {
       if (!scope.current.boxLayout) {
         return
       }
+
       retriever.current.retrieve(scope.current.boxLayout)
     }
   }, [])
@@ -114,18 +115,19 @@ function TextPicker(_props: TextPickerSchema.Props.Input) {
       }}
       data-retriever-ignored
     >
-      {elementBoundingRects.map(({ key, rect }) => (
-        <div
-          key={key}
-          className="-outline-offset-1 absolute bg-dodger_blue/20 outline outline-1 outline-dodger_blue"
-          style={{
-            top: pixel(rect.top),
-            left: pixel(rect.left),
-            width: pixel(rect.width),
-            height: pixel(rect.height),
-          }}
-        />
-      ))}
+      {props.displayed &&
+        elementBoundingRects.map(({ key, rect }) => (
+          <div
+            key={key}
+            className="-outline-offset-1 absolute bg-dodger_blue/20 outline outline-1 outline-dodger_blue"
+            style={{
+              top: pixel(rect.top),
+              left: pixel(rect.left),
+              width: pixel(rect.width),
+              height: pixel(rect.height),
+            }}
+          />
+        ))}
 
       <HoleyDimmed
         className="absolute top-0 left-0 z-[1]"
