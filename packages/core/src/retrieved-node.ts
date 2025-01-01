@@ -80,30 +80,69 @@ export class RetrievedNode {
   }
 
   getTextWithLineBreaks(element: Element): string {
-    let text = ''
+    const texts: string[] = ['']
 
     for (const node of element.childNodes) {
       if (node.nodeType === Node.TEXT_NODE) {
-        text += node.textContent
+        const lines = node.textContent?.split('\n') || []
+
+        lines.forEach((line) => {
+          const text = texts[texts.length - 1]
+          const trimmed = line.replace(/\s+/g, ' ').trim()
+
+          if (!trimmed) {
+            return
+          }
+
+          if (text) {
+            texts.push('')
+          }
+
+          texts[texts.length - 1] = trimmed
+        })
       } else if (node.nodeType === Node.ELEMENT_NODE) {
         const el = node as Element
+        const isBlock = !window.getComputedStyle(el).display.includes('inline')
+
+        let text = texts[texts.length - 1]
+        let nextText = ''
 
         if (el.tagName.toLowerCase() === 'img') {
           const alt = el.getAttribute('alt') || 'image'
           const src = el.getAttribute('src') || ''
 
-          text += `![${alt}](${src})`
+          nextText += `![${alt}](${src})`
         } else {
-          text += this.getTextWithLineBreaks(el)
+          nextText += this.getTextWithLineBreaks(el)
         }
 
-        if (window.getComputedStyle(el).display !== 'inline') {
-          text += '\n'
+        if (!nextText) {
+          continue
+        }
+
+        if (isBlock) {
+          if (text) {
+            texts.push('')
+          }
+          texts[texts.length - 1] = nextText
+          texts.push('')
+        } else {
+          if (text) {
+            text += ' '
+          }
+          text += nextText
+          texts[texts.length - 1] = text
         }
       }
     }
 
-    return text
+    const last = texts.pop()
+
+    if (last) {
+      texts.push(last)
+    }
+
+    return texts.join('\n')
   }
 
   static createCopyResult(
