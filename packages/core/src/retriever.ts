@@ -74,8 +74,9 @@ export class Retriever {
         return
       }
 
-      const visitedElements = new Set<Element>()
-      const foundElements = new Set<Element>()
+      const visitedElementSet = new Set<Element>()
+      const uniqueElementSet = new Set<Element>()
+      const foundElements: Element[] = []
 
       const spacing = 10
 
@@ -87,10 +88,10 @@ export class Retriever {
 
       for (const el of document.querySelectorAll('[data-retriever-ignored]')) {
         for (const innerElement of el.querySelectorAll('*')) {
-          visitedElements.add(innerElement)
+          visitedElementSet.add(innerElement)
         }
 
-        visitedElements.add(el)
+        visitedElementSet.add(el)
       }
 
       for (
@@ -107,44 +108,43 @@ export class Retriever {
 
           elements.splice(elements.length - 2, 2)
 
-          for (let i = elements.length - 1; i >= 0; i--) {
-            const el = elements[i]
-
-            let isContained = false
-
-            if (visitedElements.has(el)) {
-              continue
+          elements.forEach((el) => {
+            if (uniqueElementSet.has(el)) {
+              return
             }
 
-            visitedElements.add(el)
-
-            for (const foundEl of foundElements) {
-              if (foundEl.contains(el)) {
-                isContained = true
-                break
-              }
-            }
-
-            if (isContained) {
-              continue
-            }
-
-            const rect = el.getBoundingClientRect()
-            let retrievedCount = 0
-
-            if (rect.top >= boundary.top) retrievedCount++
-            if (rect.bottom <= boundary.bottom) retrievedCount++
-            if (rect.left >= boundary.left) retrievedCount++
-            if (rect.right <= boundary.right) retrievedCount++
-
-            if (retrievedCount >= 3) {
-              foundElements.add(el)
-            }
-          }
+            uniqueElementSet.add(el)
+          })
         }
       }
 
-      node.create(Array.from(foundElements))
+      for (const el of uniqueElementSet) {
+        if (visitedElementSet.has(el)) {
+          continue
+        }
+
+        visitedElementSet.add(el)
+
+        const rect = el.getBoundingClientRect()
+        let retrievedCount = 0
+
+        if (rect.top >= boundary.top) retrievedCount++
+        if (rect.bottom <= boundary.bottom) retrievedCount++
+        if (rect.left >= boundary.left) retrievedCount++
+        if (rect.right <= boundary.right) retrievedCount++
+
+        if (retrievedCount >= 3) {
+          foundElements.push(el)
+        }
+      }
+
+      const filteredElements = foundElements.filter((childEl, childIndex) => {
+        return !foundElements.some((parentEl, parentIndex) => {
+          return parentIndex !== childIndex && parentEl.contains(childEl)
+        })
+      })
+
+      node.create(filteredElements)
       this.#cacheMap.set(cacheKey, node)
       this.#emit(node)
       this.#clearExpiredCache()
