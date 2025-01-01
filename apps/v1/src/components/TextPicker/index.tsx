@@ -87,7 +87,7 @@ function TextPicker(_props: TextPickerSchema.Props.Input) {
     <div
       className={classNames(
         props.className,
-        'fixed top-0 left-0 h-screen w-screen',
+        'fixed top-0 left-0 h-screen w-screen font-sans text-[16px]',
         {
           'pointer-events-none': !props.displayed,
         },
