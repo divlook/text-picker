@@ -1,51 +1,24 @@
+import { CHROME_APP_ID } from '@/chrome/contants.js'
+import type { ChromeSchema } from '@/chrome/schema.js'
+
 /**
  * @see https://developer.chrome.com/extensions/devguide
  * @see https://developer.chrome.com/extensions/background_pages
  * @see https://developer.chrome.com/extensions/messaging
  * @see https://developer.chrome.com/extensions/tabs
  */
-export namespace ChromeSDK {
-  export const APP_ID = '@divlook/text-picker'
-
-  export function initBackground() {
-    chrome.action.onClicked.addListener((tab) => {
-      sendChromeMessage(tab.id)
-    })
+export class ChromeSDK {
+  constructor() {
+    if (typeof chrome === 'undefined') {
+      throw new Error('Chrome SDK is not available')
+    }
   }
 
-  export function initContent(options?: {
-    onMessage?: (action: 'toggle') => void
-  }) {
-    chrome.runtime.onMessage.addListener((payload) => {
-      window.postMessage({
-        appId: APP_ID,
-        payload,
-      })
-
-      return true
-    })
-
-    window.addEventListener('message', (event) => {
-      const data = event.data
-
-      if (data.appId !== ChromeSDK.APP_ID) {
-        return
-      }
-
-      switch (data.payload?.action) {
-        case 'toggle':
-          options?.onMessage?.(data.payload.action)
-
-          break
-      }
-    })
-  }
-
-  export function resolveRuntimeUrl(path: string) {
+  getResourceUrl(path: string) {
     return chrome.runtime.getURL(path)
   }
 
-  function getActiveTabId() {
+  getActiveTabId() {
     return new Promise<number | null>((resolve) => {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         const activeTabId = tabs[0].id || null
@@ -55,15 +28,51 @@ export namespace ChromeSDK {
     })
   }
 
-  async function sendChromeMessage(tabId: number | null = null) {
-    const activeTabId = tabId || (await getActiveTabId())
+  async sendMessageToTab(payload: {
+    tabId?: number
+    action: ChromeSchema.Action
+  }) {
+    const activeTabId = payload.tabId ?? (await this.getActiveTabId())
 
     if (!activeTabId) {
       return
     }
 
     chrome.tabs.sendMessage(activeTabId, {
-      action: 'toggle',
+      action: payload.action,
     })
+  }
+
+  addClickListenerToActionIcon(
+    actionIconClickHandler: (tab: chrome.tabs.Tab) => void,
+  ) {
+    chrome.action.onClicked.addListener((tab) => {
+      actionIconClickHandler(tab)
+    })
+
+    return {
+      remove() {
+        chrome.action.onClicked.removeListener(actionIconClickHandler)
+      },
+    }
+  }
+
+  initializeBridge() {
+    const callback = (payload: ChromeSchema.MessagePayload) => {
+      window.postMessage({
+        appId: CHROME_APP_ID,
+        payload,
+      } as ChromeSchema.Message)
+
+      return true
+    }
+
+    chrome.runtime.onMessage.addListener(callback)
+
+    return {
+      remove() {
+        chrome.runtime.onMessage.removeListener(callback)
+      },
+    }
   }
 }
