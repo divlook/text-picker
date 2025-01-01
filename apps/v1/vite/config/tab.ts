@@ -10,11 +10,11 @@ export default mergeConfig(
       emptyOutDir: false,
       rollupOptions: {
         input: {
-          main: dir('src/chrome/scripts/main.tsx'),
+          tab: dir('src/chrome/entries/tab.tsx'),
         },
         output: {
           format: 'es',
-          entryFileNames: '[name].js',
+          entryFileNames: 'entries/[name].js',
           assetFileNames: 'assets/[name].[ext]',
           chunkFileNames: 'assets/[name].js',
         },

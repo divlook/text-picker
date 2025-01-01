@@ -9,11 +9,11 @@ export default mergeConfig(
     build: {
       rollupOptions: {
         input: {
-          background: dir('src/chrome/background.ts'),
+          background: dir('src/chrome/entries/background.ts'),
         },
         output: {
           format: 'es',
-          entryFileNames: '[name].js',
+          entryFileNames: 'entries/[name].js',
           assetFileNames: 'assets/[name].[ext]',
           chunkFileNames: 'assets/[name].js',
         },

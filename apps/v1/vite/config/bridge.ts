@@ -9,11 +9,11 @@ export default mergeConfig(
       emptyOutDir: false,
       rollupOptions: {
         input: {
-          content: dir('src/chrome/scripts/content.ts'),
+          bridge: dir('src/chrome/entries/bridge.ts'),
         },
         output: {
           format: 'umd',
-          entryFileNames: '[name].js',
+          entryFileNames: 'entries/[name].js',
         },
       },
     },
