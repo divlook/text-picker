@@ -57,6 +57,10 @@ function TextPicker(_props: TextPickerSchema.Props.Input) {
     )
   }, [lastNode?.elements])
 
+  const scope = useRef({
+    boxLayout,
+  })
+
   function onChangeBoxLayout(layout: BoundingBoxSchema) {
     setBoxLayout(layout)
     retriever.current.retrieve(layout)
@@ -72,8 +76,18 @@ function TextPicker(_props: TextPickerSchema.Props.Input) {
       updateLastNode(node)
     })
 
+    window.addEventListener('resize', retrieveOnResize)
+
     return () => {
       retriever.current.clear()
+      window.removeEventListener('resize', retrieveOnResize)
+    }
+
+    function retrieveOnResize() {
+      if (!scope.current.boxLayout) {
+        return
+      }
+      retriever.current.retrieve(scope.current.boxLayout)
     }
   }, [])
 
@@ -82,6 +96,8 @@ function TextPicker(_props: TextPickerSchema.Props.Input) {
       guideBoxController.current?.resetState()
     }
   }, [props.displayed])
+
+  scope.current.boxLayout = boxLayout
 
   return (
     <div
