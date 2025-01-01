@@ -1,12 +1,12 @@
 import TextPicker from '@/components/TextPicker'
-import { ChromeSDK } from '@text-picker/core/chrome/sdk'
+import { enableChromeTab } from '@text-picker/core/chrome/tab'
 import { useEffect, useState } from 'react'
 
 function ChromeApp() {
   const [displayed, setDisplayed] = useState(false)
 
   useEffect(() => {
-    ChromeSDK.initContent({
+    const chromeTabHandler = enableChromeTab({
       onMessage: (action) => {
         switch (action) {
           case 'toggle':
@@ -15,6 +15,10 @@ function ChromeApp() {
         }
       },
     })
+
+    return () => {
+      chromeTabHandler.disable()
+    }
   }, [])
 
   return (

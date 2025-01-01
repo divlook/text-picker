@@ -10,22 +10,22 @@
     "128": "/assets/icon@128.png"
   },
   "permissions": ["activeTab", "clipboardWrite"],
-  "background": {
-    "service_worker": "background.js",
-    "type": "module"
-  },
   "action": {
     "default_title": "Text Picker"
+  },
+  "background": {
+    "service_worker": "entries/background.js",
+    "type": "module"
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content.js"]
+      "js": ["entries/bridge.js"]
     }
   ],
   "web_accessible_resources": [
     {
-      "resources": ["assets/*", "main.js"],
+      "resources": ["assets/*", "entries/*"],
       "matches": ["<all_urls>"]
     }
   ]
