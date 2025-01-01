@@ -86,6 +86,9 @@
           "style": {
             "noUnusedTemplateLiteral": "off"
           },
+          "complexity": {
+            "noForEach": "off"
+          },
           "correctness": {
             "noUnusedImports": {
               "level": "warn",
