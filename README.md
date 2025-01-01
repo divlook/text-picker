@@ -57,3 +57,9 @@ pnpm run chrome
 ```bash
 pnpm run chrome:build
 ```
+
+### Versioning
+
+```bash
+pnpm --filter v1 exec pnpm version [<newversion> | major | minor | patch]
+```
