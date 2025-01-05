@@ -76,14 +76,16 @@ function TextPicker(_props: TextPickerSchema.Props.Input) {
       updateLastNode(node)
     })
 
-    window.addEventListener('resize', retrieveOnResize)
+    window.addEventListener('resize', retrieveOnLayoutChange)
+    window.addEventListener('scroll', retrieveOnLayoutChange)
 
     return () => {
       retriever.current.clear()
-      window.removeEventListener('resize', retrieveOnResize)
+      window.removeEventListener('resize', retrieveOnLayoutChange)
+      window.removeEventListener('scroll', retrieveOnLayoutChange)
     }
 
-    function retrieveOnResize() {
+    function retrieveOnLayoutChange() {
       if (!scope.current.boxLayout) {
         return
       }
