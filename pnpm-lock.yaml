@@ -15,11 +15,11 @@ importers:
         specifier: ^2.3.0
         version: 2.3.0
 
-  apps/v1:
+  modules/v1:
     dependencies:
       '@text-picker/core':
         specifier: workspace:*
-        version: link:../../packages/core
+        version: link:../../modules/core
       classnames:
         specifier: ^2.5.1
         version: 2.5.1
@@ -85,7 +85,7 @@ importers:
         specifier: ^5.4.10
         version: 5.4.11(@types/node@20.17.6)
 
-  packages/core:
+  modules/core:
     dependencies:
       zod:
         specifier: ^3.23.8
