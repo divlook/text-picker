@@ -76,7 +76,7 @@ export class Retriever {
 
       const visitedElementSet = new Set<Element>()
       const uniqueElementSet = new Set<Element>()
-      const foundElements: Element[] = []
+      const foundElementSet = new Set<Element>()
 
       const spacing = 10
 
@@ -94,6 +94,7 @@ export class Retriever {
         visitedElementSet.add(el)
       }
 
+      // point에서 발견된 모든 요소를 uniqueElementSet에 추가
       for (
         let y = boundary.top + spacing;
         y <= boundary.bottom - spacing;
@@ -109,7 +110,7 @@ export class Retriever {
           elements.splice(elements.length - 2, 2)
 
           elements.forEach((el) => {
-            if (uniqueElementSet.has(el)) {
+            if (visitedElementSet.has(el) || uniqueElementSet.has(el)) {
               return
             }
 
@@ -118,6 +119,7 @@ export class Retriever {
         }
       }
 
+      // uniqueElementSet에 있는 요소 중 boundary 안에 있는 요소만 찾아서 foundElements에 추가
       for (const el of uniqueElementSet) {
         if (visitedElementSet.has(el)) {
           continue
@@ -134,17 +136,29 @@ export class Retriever {
         if (rect.right <= boundary.right) retrievedCount++
 
         if (retrievedCount >= 3) {
-          foundElements.push(el)
+          foundElementSet.add(el)
         }
       }
 
-      const filteredElements = foundElements.filter((childEl, childIndex) => {
-        return !foundElements.some((parentEl, parentIndex) => {
-          return parentIndex !== childIndex && parentEl.contains(childEl)
+      // foundElementSet에 있는 요소 중 부모 요소가 포함하는 자식 요소는 제거
+      foundElementSet.forEach((parentEl) => {
+        // 이미 제거된 요소는 제외
+        if (!foundElementSet.has(parentEl)) {
+          return
+        }
+
+        // 부모 요소가 포함하는 자식 요소를 찾아서 foundElementSet에서 제거
+        foundElementSet.forEach((childEl) => {
+          if (parentEl === childEl || !parentEl.contains(childEl)) {
+            return
+          }
+
+          // 부모 요소가 포함하는 자식 요소는 제거
+          foundElementSet.delete(childEl)
         })
       })
 
-      node.create(filteredElements)
+      node.create([...foundElementSet])
       this.#cacheMap.set(cacheKey, node)
       this.#emit(node)
       this.#clearExpiredCache()
