@@ -59,7 +59,13 @@ export class Retriever {
   }
 
   retrieve(boundary: BoundingBoxSchema): void {
-    const cacheKey = JSON.stringify(boundary)
+    const cacheKey = JSON.stringify({
+      boundary,
+      scroll: {
+        x: window.scrollX,
+        y: window.scrollY,
+      },
+    })
     const cached = this.#cacheMap.get(cacheKey)
     const isDebounceEnabled = this.#throttleTime >= Retriever.MAX_THROTTLE_TIME
     const collectElementsInBoundary = () => {

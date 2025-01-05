@@ -70,16 +70,14 @@ function GuideBox(_props: GuideBoxSchema.PropsInput) {
   useWatchState(boxLayout, emitLayout)
 
   useEffect(() => {
-    const resizeListener = () => {
-      emitLayout()
-    }
-
     emitLayout()
 
-    window.addEventListener('resize', resizeListener)
+    window.addEventListener('resize', emitLayout)
+    window.addEventListener('scroll', emitLayout)
 
     return () => {
-      window.removeEventListener('resize', resizeListener)
+      window.removeEventListener('resize', emitLayout)
+      window.removeEventListener('scroll', emitLayout)
     }
   }, [])
 
