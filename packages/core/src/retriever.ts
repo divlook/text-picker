@@ -1,4 +1,4 @@
-import type { BoundarySchema } from '@/index.js'
+import type { BoundarySchema, BoundingBoxSchema } from '@/index.js'
 import { RetrievedNode } from '@/retrieved-node.js'
 
 export class Retriever {
@@ -58,7 +58,7 @@ export class Retriever {
     }, 300)
   }
 
-  retrieve(boundary: BoundarySchema): void {
+  retrieve(boundary: BoundingBoxSchema): void {
     const cacheKey = JSON.stringify(boundary)
     const cached = this.#cacheMap.get(cacheKey)
     const isDebounceEnabled = this.#throttleTime >= Retriever.MAX_THROTTLE_TIME
