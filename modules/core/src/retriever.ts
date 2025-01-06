@@ -126,7 +126,9 @@ export class Retriever {
       }
 
       // uniqueElementSet에 있는 요소 중 boundary 안에 있는 요소만 찾아서 foundElements에 추가
-      for (const el of uniqueElementSet) {
+      for (const _el of uniqueElementSet) {
+        const el = _el as HTMLElement
+
         if (visitedElementSet.has(el)) {
           continue
         }
@@ -134,12 +136,26 @@ export class Retriever {
         visitedElementSet.add(el)
 
         const rect = el.getBoundingClientRect()
+        const style = window.getComputedStyle(el)
+        const padding = {
+          top: Number.parseFloat(style.paddingTop),
+          right: Number.parseFloat(style.paddingRight),
+          bottom: Number.parseFloat(style.paddingBottom),
+          left: Number.parseFloat(style.paddingLeft),
+        }
+        const rectWithoutPadding = {
+          top: rect.top + padding.top,
+          right: rect.right - padding.right,
+          bottom: rect.bottom - padding.bottom,
+          left: rect.left + padding.left,
+        }
+
         let retrievedCount = 0
 
-        if (rect.top >= boundary.top) retrievedCount++
-        if (rect.bottom <= boundary.bottom) retrievedCount++
-        if (rect.left >= boundary.left) retrievedCount++
-        if (rect.right <= boundary.right) retrievedCount++
+        if (rectWithoutPadding.top >= boundary.top) retrievedCount++
+        if (rectWithoutPadding.bottom <= boundary.bottom) retrievedCount++
+        if (rectWithoutPadding.left >= boundary.left) retrievedCount++
+        if (rectWithoutPadding.right <= boundary.right) retrievedCount++
 
         if (retrievedCount >= 3) {
           foundElementSet.add(el)
@@ -155,7 +171,11 @@ export class Retriever {
 
         // 부모 요소가 포함하는 자식 요소를 찾아서 foundElementSet에서 제거
         foundElementSet.forEach((childEl) => {
-          if (parentEl === childEl || !parentEl.contains(childEl)) {
+          if (parentEl === childEl) {
+            return
+          }
+
+          if (!parentEl.contains(childEl)) {
             return
           }
 
