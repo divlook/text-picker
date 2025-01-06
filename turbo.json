@@ -3,21 +3,10 @@
   "ui": "tui",
   "tasks": {
     "turbo:build": {
-      "cache": false,
       "dependsOn": [
         "^turbo:build"
       ],
-      "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": ["dist/**", "release/**"]
-    },
-    "turbo:dev": {
-      "cache": false,
-      "persistent": true,
-      "interactive": true,
-      "dependsOn": [
-        "@text-picker/core#turbo:build"
-      ],
-      "inputs": ["$TURBO_DEFAULT$", "src/**"]
     },
     "turbo:ui": {
       "cache": false,

@@ -3,7 +3,7 @@
   "private": true,
   "packageManager": "pnpm@9.15.0",
   "scripts": {
-    "dev": "turbo watch turbo:dev",
+    "dev": "turbo watch turbo:build",
     "ui": "turbo watch turbo:ui",
     "build": "turbo turbo:build",
     "lint": "pnpm biome lint",

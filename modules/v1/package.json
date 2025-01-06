@@ -10,7 +10,6 @@
     "ui": "storybook dev -p 6006",
     "ui.build": "storybook build",
     "turbo:build": "pnpm build",
-    "turbo:dev": "pnpm build",
     "turbo:ui": "pnpm ui"
   },
   "dependencies": {
