@@ -90,6 +90,44 @@ export class Retriever {
         boundary,
       })
 
+      const retrieveUniqueElementsFromPoint = ({
+        doc,
+        x,
+        y,
+      }: {
+        doc: Document
+        x: number
+        y: number
+      }) => {
+        const elements = doc.elementsFromPoint(x, y)
+
+        elements.splice(elements.length - 2, 2)
+
+        elements.forEach((el) => {
+          if (visitedElementSet.has(el) || uniqueElementSet.has(el)) {
+            return
+          }
+
+          if (el.tagName === 'IFRAME') {
+            const iframe = el as HTMLIFrameElement
+            const doc = iframe.contentWindow?.document
+
+            if (!doc) {
+              return
+            }
+
+            retrieveUniqueElementsFromPoint({
+              doc,
+              x,
+              y,
+            })
+            return
+          }
+
+          uniqueElementSet.add(el)
+        })
+      }
+
       this.#cacheMap.set(cacheKey, node)
 
       for (const el of document.querySelectorAll('[data-retriever-ignored]')) {
@@ -111,16 +149,10 @@ export class Retriever {
           x <= boundary.right - spacing;
           x += spacing
         ) {
-          const elements = document.elementsFromPoint(x, y)
-
-          elements.splice(elements.length - 2, 2)
-
-          elements.forEach((el) => {
-            if (visitedElementSet.has(el) || uniqueElementSet.has(el)) {
-              return
-            }
-
-            uniqueElementSet.add(el)
+          retrieveUniqueElementsFromPoint({
+            doc: document,
+            x,
+            y,
           })
         }
       }
