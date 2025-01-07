@@ -1,0 +1,115 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "vcs": {
+    "enabled": false,
+    "clientKind": "git",
+    "useIgnoreFile": false
+  },
+  "files": {
+    "ignoreUnknown": false,
+    "ignore": [
+      "modules-deprecated",
+      "release"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "useEditorconfig": true,
+    "formatWithErrors": false,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineEnding": "lf",
+    "lineWidth": 80,
+    "attributePosition": "multiline",
+    "bracketSpacing": true,
+    "ignore": [
+      "dist",
+      ".tsup"
+    ]
+  },
+  "organizeImports": {
+    "enabled": true
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "suspicious": {
+        "noArrayIndexKey": "off"
+      },
+      "a11y": {
+        "noSvgWithoutTitle": "off"
+      }
+    },
+    "ignore": [
+      "dist",
+      ".tsup"
+    ]
+  },
+  "javascript": {
+    "formatter": {
+      "jsxQuoteStyle": "double",
+      "quoteProperties": "asNeeded",
+      "trailingCommas": "all",
+      "semicolons": "asNeeded",
+      "arrowParentheses": "always",
+      "bracketSameLine": false,
+      "quoteStyle": "single"
+    }
+  },
+  "css": {
+    "formatter": {
+      "quoteStyle": "single"
+    }
+  },
+  "json": {
+    "formatter": {
+      "enabled": false
+    },
+    "linter": {
+      "enabled": false
+    }
+  },
+  "overrides": [
+    {
+      "include": [
+        "**/*.ts",
+        "**/*.tsx"
+      ],
+      "javascript": {
+        "globals": [
+          "React"
+        ]
+      },
+      "linter": {
+        "rules": {
+          "style": {
+            "noUnusedTemplateLiteral": "off"
+          },
+          "complexity": {
+            "noForEach": "off"
+          },
+          "correctness": {
+            "noUnusedImports": {
+              "level": "warn",
+              "fix": "safe"
+            },
+            "useExhaustiveDependencies": {
+              "level": "error",
+              "options": {
+                "reportUnnecessaryDependencies": false
+              }
+            },
+            "useHookAtTopLevel": "error"
+          },
+          "nursery": {
+            "useSortedClasses": {
+              "level": "warn",
+              "fix": "safe"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

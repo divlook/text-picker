@@ -1,0 +1,33 @@
+{
+  "name": "@text-picker/core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "turbo:build": "pnpm build"
+  },
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.js",
+      "default": "./dist/*/index.js"
+    }
+  },
+  "devDependencies": {
+    "chrome-types": "latest",
+    "tsup": "^8.3.5",
+    "typescript": "~5.6.3"
+  },
+  "dependencies": {
+    "zod": "^3.23.8"
+  }
+}

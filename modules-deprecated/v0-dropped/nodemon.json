@@ -1,0 +1,11 @@
+{
+    "ignore": [
+        "dist",
+        "release",
+        "node_modules"
+    ],
+    "watch": [
+        "src/"
+    ],
+    "ext": "ts,tsx,json"
+}
