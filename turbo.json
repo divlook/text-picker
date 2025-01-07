@@ -1,0 +1,20 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "ui": "tui",
+  "tasks": {
+    "turbo:build": {
+      "dependsOn": [
+        "^turbo:build"
+      ],
+      "outputs": ["dist/**", "release/**"]
+    },
+    "turbo:ui": {
+      "cache": false,
+      "persistent": true,
+      "interactive": true,
+      "dependsOn": [
+        "@text-picker/core#turbo:build"
+      ]
+    }
+  }
+}
