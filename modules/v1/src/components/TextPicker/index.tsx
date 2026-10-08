@@ -184,11 +184,9 @@ function TextPicker(_props: TextPickerSchema.Props.Input) {
 
       <GuideBox
         controllerRef={guideBoxController}
-        className={classNames(
-          'z-[4] transition-opacity',
-          !props.displayed && 'opacity-0',
-        )}
+        className="z-[4] transition-opacity"
         style={{
+          opacity: props.displayed ? 1 : 0,
           top: `calc(50% - ${pixel(GuideBoxConst.MIN_HEIGHT / 2)})`,
           left: `calc(50% - ${pixel(GuideBoxConst.MIN_WIDTH / 2)})`,
         }}
