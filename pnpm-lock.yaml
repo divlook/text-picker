@@ -15,11 +15,30 @@ importers:
         specifier: ^2.3.0
         version: 2.3.0
 
+  modules/core:
+    dependencies:
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
+    devDependencies:
+      chrome-types:
+        specifier: latest
+        version: 0.1.453
+      playwright:
+        specifier: ^1.64.0
+        version: 1.64.0
+      tsup:
+        specifier: ^8.3.5
+        version: 8.3.5(jiti@1.21.6)(postcss@8.4.49)(typescript@5.6.3)(yaml@2.6.1)
+      typescript:
+        specifier: ~5.6.3
+        version: 5.6.3
+
   modules/v1:
     dependencies:
       '@text-picker/core':
         specifier: workspace:*
-        version: link:../../modules/core
+        version: link:../core
       classnames:
         specifier: ^2.5.1
         version: 2.5.1
@@ -84,22 +103,6 @@ importers:
       vite:
         specifier: ^5.4.10
         version: 5.4.11(@types/node@20.17.6)
-
-  modules/core:
-    dependencies:
-      zod:
-        specifier: ^3.23.8
-        version: 3.23.8
-    devDependencies:
-      chrome-types:
-        specifier: latest
-        version: 0.1.327
-      tsup:
-        specifier: ^8.3.5
-        version: 8.3.5(jiti@1.21.6)(postcss@8.4.49)(typescript@5.6.3)(yaml@2.6.1)
-      typescript:
-        specifier: ~5.6.3
-        version: 5.6.3
 
 packages:
 
@@ -1061,8 +1064,8 @@ packages:
     resolution: {integrity: sha512-n8enUVCED/KVRQlab1hr3MVpcVMvxtZjmEa956u+4YijlmQED223XMSYj2tLuKvr4jcCTzNNMpQDUer72MMmzA==}
     engines: {node: '>= 14.16.0'}
 
-  chrome-types@0.1.327:
-    resolution: {integrity: sha512-Xsxt+rgppI6w3gG4XO/6RrmMx5BAqKCeue49iGaXA4xu4BVskIsIMsGod8OdohLO6TySp+gj7yB/yeoxwGQlnQ==}
+  chrome-types@0.1.453:
+    resolution: {integrity: sha512-X0KvNaSIxQ8cGWGfUebHF+vcMbfDpt6GnKPxR55lY18P+W4r79caq1dOamgbb+VIKfzKrIb115taCh/dq8HDVg==}
 
   classnames@2.5.1:
     resolution: {integrity: sha512-saHYOzhIQs6wy2sVxTM6bUDsQO4F50V9RQ22qBpEdCW+I+/Wmke2HOl6lS6dTpdxVhb88/I6+Hs+438c3lfUow==}
@@ -1254,6 +1257,7 @@ packages:
 
   glob@10.4.5:
     resolution: {integrity: sha512-7Bv8RF0k6xjo7d4A/PxYLbUCfb6c+Vpd2/mB2yRDlew7Jb5hEXiCD9ibfO7wpk8i4sevK6DFny9h7EYbM3/sHg==}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   globals@11.12.0:
@@ -1534,6 +1538,16 @@ packages:
     resolution: {integrity: sha512-saLsH7WeYYPiD25LDuLRRY/i+6HaPYr6G1OUlN39otzkSTxKnubR9RTxS3/Kk50s1g2JTgFwWQDQyplC5/SHZg==}
     engines: {node: '>= 6'}
 
+  playwright-core@1.64.0:
+    resolution: {integrity: sha512-T9r+MZkTECl2+oUcZ26YgZzTrYidTsIhYYkJix+6iDOymOb1FB2RLLSOxRGnZGv5DStt+aduIVbt+E8WygXYpg==}
+    engines: {node: '>=20'}
+    hasBin: true
+
+  playwright@1.64.0:
+    resolution: {integrity: sha512-kVzTnYFYEyQ9RGzBjNCd2+yEqWmVbxl3AHPynv3qQ6JTjv4a+kwRcnqQwIpuP3NnrnIrE/Q6wWAIAvMfIE2/Yg==}
+    engines: {node: '>=20'}
+    hasBin: true
+
   polished@4.3.1:
     resolution: {integrity: sha512-OBatVyC/N7SCW/FaDHrSd+vn0o5cS855TOmYi4OkdWUMSJCET/xip//ch8xGUvtr3i44X9LVyWwQlRMTN3pwSA==}
     engines: {node: '>=10'}
@@ -1728,6 +1742,7 @@ packages:
   source-map@0.8.0-beta.0:
     resolution: {integrity: sha512-2ymg6oRBpebeZi9UUNsgQ89bhx01TcTkmNTGnNO88imTmbSgy4nfujrgVEFKWpMTEGA11EDkTt7mqObTPdigIA==}
     engines: {node: '>= 8'}
+    deprecated: The work that was done in this beta branch won't be included in future versions
 
   storybook@8.4.7:
     resolution: {integrity: sha512-RP/nMJxiWyFc8EVMH5gp20ID032Wvk+Yr3lmKidoegto5Iy+2dVQnUoElZb2zpbVXNHWakGuAkfI0dY1Hfp/vw==}
@@ -1920,6 +1935,7 @@ packages:
 
   uuid@9.0.1:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
+    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
   vite@5.4.11:
@@ -2891,7 +2907,7 @@ snapshots:
     dependencies:
       readdirp: 4.0.2
 
-  chrome-types@0.1.327: {}
+  chrome-types@0.1.453: {}
 
   classnames@2.5.1: {}
 
@@ -3307,6 +3323,12 @@ snapshots:
   pify@2.3.0: {}
 
   pirates@4.0.6: {}
+
+  playwright-core@1.64.0: {}
+
+  playwright@1.64.0:
+    dependencies:
+      playwright-core: 1.64.0
 
   polished@4.3.1:
     dependencies:
