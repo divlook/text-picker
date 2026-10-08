@@ -46,9 +46,7 @@ export class ChromeSDK {
   addClickListenerToActionIcon(
     actionIconClickHandler: (tab: chrome.tabs.Tab) => void,
   ) {
-    chrome.action.onClicked.addListener((tab) => {
-      actionIconClickHandler(tab)
-    })
+    chrome.action.onClicked.addListener(actionIconClickHandler)
 
     return {
       remove() {

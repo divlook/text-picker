@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "turbo:build": "pnpm build"
+    "turbo:build": "pnpm build",
+    "test": "pnpm build && node --test test/*.test.js"
   },
   "files": [
     "dist"
@@ -24,6 +25,7 @@
   },
   "devDependencies": {
     "chrome-types": "latest",
+    "playwright": "^1.64.0",
     "tsup": "^8.3.5",
     "typescript": "~5.6.3"
   },

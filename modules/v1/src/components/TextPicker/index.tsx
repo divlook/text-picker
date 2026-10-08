@@ -8,8 +8,8 @@ import { TextPickerSchema } from '@/components/TextPicker/schema'
 import Toast from '@/components/Toast'
 import { useToast } from '@/components/Toast/hooks'
 import { type BoundingBoxSchema, pixel } from '@text-picker/core'
-import type { RetrievedNode } from '@text-picker/core/retrieved-node'
-import { Retriever } from '@text-picker/core/retriever'
+import { copyText } from '@text-picker/core/clipboard'
+import { type RetrievalResult, Retriever } from '@text-picker/core/retriever'
 import classNames from 'classnames'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
@@ -20,11 +20,13 @@ function TextPicker(_props: TextPickerSchema.Props.Input) {
 
   const guideBoxController = useRef<GuideBoxSchema.Controller>(null)
 
-  const retriever = useRef(new Retriever())
+  const [retriever] = useState(() => new Retriever())
+  const displayed = useRef(props.displayed)
+  displayed.current = props.displayed
 
   const toast = useToast()
 
-  const [lastNode, updateLastNode] = useState<RetrievedNode | null>(null)
+  const [lastNode, updateLastNode] = useState<RetrievalResult | null>(null)
 
   const [boxLayout, setBoxLayout] = useState<BoundingBoxSchema | null>(null)
 
@@ -48,18 +50,18 @@ function TextPicker(_props: TextPickerSchema.Props.Input) {
 
   const elementBoundingRects = useMemo(() => {
     return (
-      lastNode?.elements.map((el, index) => {
+      lastNode?.rects.map((rect, index) => {
         return {
-          key: `${index}_${Date.now()}`,
-          rect: el.getBoundingClientRect(),
+          key: index,
+          rect,
         }
       }) ?? []
     )
-  }, [lastNode?.elements])
+  }, [lastNode?.rects])
 
   function onChangeBoxLayout(layout: BoundingBoxSchema) {
     setBoxLayout(layout)
-    retriever.current.retrieve(layout)
+    if (displayed.current) retriever.retrieve(layout)
   }
 
   function quit() {
@@ -68,14 +70,15 @@ function TextPicker(_props: TextPickerSchema.Props.Input) {
   }
 
   useEffect(() => {
-    retriever.current.on((node) => {
+    if (!props.displayed) return
+    retriever.on((node) => {
       updateLastNode(node)
     })
 
     return () => {
-      retriever.current.clear()
+      retriever.clear()
     }
-  }, [])
+  }, [retriever, props.displayed])
 
   useEffect(() => {
     if (props.displayed) {
@@ -106,8 +109,8 @@ function TextPicker(_props: TextPickerSchema.Props.Input) {
             style={{
               top: pixel(rect.top),
               left: pixel(rect.left),
-              width: pixel(rect.width),
-              height: pixel(rect.height),
+              width: pixel(rect.right - rect.left),
+              height: pixel(rect.bottom - rect.top),
             }}
           />
         ))}
@@ -137,7 +140,9 @@ function TextPicker(_props: TextPickerSchema.Props.Input) {
                   label="Copy text"
                   disalbed={!hasElements}
                   onClick={async () => {
-                    const { code, message } = (await lastNode?.copyText()) ?? {}
+                    if (!boxLayout) return
+                    const result = retriever.retrieveNow(boxLayout)
+                    const { code, message } = await copyText(result.text)
 
                     if (code === 'SUCCESS') {
                       toast.showMessage('Text copied')

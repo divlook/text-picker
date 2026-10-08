@@ -6,6 +6,7 @@
     "dev": "turbo watch turbo:build",
     "ui": "turbo watch turbo:ui",
     "build": "turbo turbo:build",
+    "test": "pnpm --filter @text-picker/core test",
     "lint": "pnpm biome lint",
     "format": "biome format --write"
   },

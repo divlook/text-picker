@@ -94,3 +94,14 @@ pnpm --filter v1 exec pnpm version [<newversion> | major | minor | patch]
 pnpm run lint
 pnpm run format
 ```
+
+### 핵심 회귀 테스트
+
+최초 실행 전 Playwright의 Chromium 실행 파일을 설치합니다.
+
+```bash
+pnpm --filter @text-picker/core exec playwright install chromium --only-shell
+pnpm test
+```
+
+Node 내장 테스트 실행기와 실제 Chromium을 사용합니다. iframe 좌표, 인라인 문장과 줄바꿈, 선택 기준, 최신 내용 재탐색, 예약 작업 취소, 클립보드 쓰기·오류, Chrome 리스너 해제를 검증합니다. 테스트마다 새 브라우저 컨텍스트를 사용하고 타이머는 가상 시계로 진행합니다.
