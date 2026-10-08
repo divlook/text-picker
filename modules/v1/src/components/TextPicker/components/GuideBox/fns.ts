@@ -8,8 +8,8 @@ import {
 export namespace GuideBoxFns {
   export function getInitialBoxState() {
     return BoundaryWithOffsetSchema.parse({
-      right: GuideBoxConst.MIN_WIDTH,
-      bottom: GuideBoxConst.MIN_HEIGHT,
+      right: GuideBoxConst.INITIAL_WIDTH,
+      bottom: GuideBoxConst.INITIAL_HEIGHT,
     } as BoundaryWithOffsetSchema.Input)
   }
 

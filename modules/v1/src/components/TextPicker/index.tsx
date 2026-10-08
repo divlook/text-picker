@@ -187,8 +187,8 @@ function TextPicker(_props: TextPickerSchema.Props.Input) {
         className="z-[4] transition-opacity"
         style={{
           opacity: props.displayed ? 1 : 0,
-          top: `calc(50% - ${pixel(GuideBoxConst.MIN_HEIGHT / 2)})`,
-          left: `calc(50% - ${pixel(GuideBoxConst.MIN_WIDTH / 2)})`,
+          top: `calc(50% - ${pixel(GuideBoxConst.INITIAL_HEIGHT / 2)})`,
+          left: `calc(50% - ${pixel(GuideBoxConst.INITIAL_WIDTH / 2)})`,
         }}
         inactive={!props.displayed}
         onLayout={(layout) => {
