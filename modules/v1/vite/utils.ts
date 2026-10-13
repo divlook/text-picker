@@ -17,7 +17,6 @@ export function chromeManifestPlugin(): Plugin {
     async closeBundle() {
       const json = {
         ...manifest,
-        description: pkg.description,
         version: pkg.version,
       }
 
